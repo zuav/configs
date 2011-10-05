@@ -1,0 +1,2 @@
+deb http://people.debian.org/~madkiss/ha lenny main
+deb-src http://people.debian.org/~madkiss/ha lenny main

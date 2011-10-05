@@ -1,0 +1,2 @@
+deb http://www.debian-multimedia.org/ lenny main
+deb-src http://www.debian-multimedia.org/ lenny main

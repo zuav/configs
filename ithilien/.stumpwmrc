@@ -1,0 +1,36 @@
+;;;; -*- Mode: Lisp -*-
+
+(in-package :stumpwm)
+
+;; Load swank.
+(load "/usr/share/common-lisp/source/slime/swank-loader.lisp")
+(swank-loader:init)
+(define-stumpwm-command "swank" ()
+  (setf stumpwm:*top-level-error-action* :break)
+  (swank:create-server :port 4005
+                       :style swank:*communication-style*
+                       :dont-close t)
+  (echo-string (current-screen) "Starting swank."))
+(define-key *root-map* (kbd "C-s") "swank")       
+
+(set-prefix-key (kbd "C-z"))
+
+
+;;;;;; Customize bars and modeline.
+;;;;(setf *message-window-gravity* :center)
+;;;;(setf *input-window-gravity* :center)
+;;;;;; Turn on mode line.
+;;;;(toggle-mode-line (current-screen) (current-head))
+;;;;(setf *screen-mode-line-format* 
+;;;;      (list "%w | "
+;;;;            '(:eval (run-shell-command "date | tr -d '[:cntrl:]'" t))))
+;;;;
+;;;;(set-prefix-key (kbd "C-i"))
+;;;;(define-key *root-map* (kbd "c") 
+;;;;  "exec urxvt +sb -fn \"xft:Bitstream Vera Sans Mono:pixelsize=20\"")
+;;;;
+
+(define-stumpwm-command "firefox" ()
+  "Run or switch to firefox."
+  (run-or-raise "firefox" '(:class "Firefox")))
+(define-key *root-map* (kbd "f") "firefox")

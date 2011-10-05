@@ -1,0 +1,15 @@
+# /etc/fstab: static file system information.
+#
+# <file system> <mount point>	<type>	<options>	<dump>	<pass>
+proc                                      /proc           proc          defaults                        0	0
+# /dev/sdb1
+UUID=55a642f0-fe90-4e0e-8c42-d9da5ad38fa4 /		  ext3		defaults,errors=remount-ro	0	1
+# /dev/sda1
+UUID=43d4ecee-a3ef-46e8-aa39-0fa5755b395d /home		  reiserfs	defaults	0	1
+# /dev/sda5
+UUID=9dc76fde-778d-4df3-a90d-d0645b0ce27d none		  swap		sw				0	0
+/dev/scd0				  /media/cdrom0	  auto          utf8,user,noauto,exec           0	0
+/dev/sdc1				  /media/cf	  auto		user,iocharset=utf8,uid=zuav,gid=zuav
+/dev/sde1				  /media/sd	  auto		user,iocharset=utf8,uid=zuav,gid=zuav
+#moria:/home/amarchenko2/results           /usr/local/archive/results.linux.x64  nfs     noauto,ro,intr  0       0
+//10.10.18.200/storage/trunk/linux        /usr/local/archive/unison-desktop smbfs        uid=zuav,gid=zuav,iocharset=utf8,sec=none,guest 0 0

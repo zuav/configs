@@ -1,0 +1,2 @@
+machine imap.yandex.ru login zuav password xxx port imap
+machine news.eternal-september.org login zuav force yes password xxx

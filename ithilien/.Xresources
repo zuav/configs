@@ -1,0 +1,11 @@
+XTerm*font:        -monotype-courier new-medium-r-normal-*-18-*-*-*-*-*-koi8-ru
+XTerm*saveLines:   10240
+
+*VT100*foreground: gray85
+*VT100*background: black
+*VT100*font:	   -monotype-courier new-medium-r-normal-*-18-*-*-*-*-*-koi8-ru
+*VT100*font2:	   -monotype-courier new-medium-r-normal-*-18-*-*-*-*-*-koi8-ru
+*VT100*font3:	   -monotype-courier new-medium-r-normal-*-18-*-*-*-*-*-koi8-ru
+*VT100*font4:	   -monotype-courier new-medium-r-normal-*-18-*-*-*-*-*-koi8-ru
+*VT100*font5:	   -monotype-courier new-medium-r-normal-*-18-*-*-*-*-*-koi8-ru
+*VT100*font6:	   -monotype-courier new-medium-r-normal-*-18-*-*-*-*-*-koi8-ru
