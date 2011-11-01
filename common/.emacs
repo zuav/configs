@@ -27,16 +27,13 @@
 (require 'midnight)
 (require 'savehist)
 (require 'saveplace)
-(require 'eudc)
 (require 'warnings)
-(require 'smtpmail)
 (require 'outline)
+(require 'smtpmail)
 ;;
 (require 'bbdb)
 (require 'w3m)
-;;
-;;(require 'emms)
-;(require 'emms-default)
+(require 'jabber)
 ;;
 (require 'psed)
 (require 'psvn)
@@ -45,18 +42,14 @@
 (require 'ssh)
 (require 'doc-view)
 (require 'sh-utils)
-;;(require 'jabber)
+(require 'top-mode)
+;(require 'emacsd-tile)
 ;;;;
 ;;;; load libraries
 ;;;;
 (load "paren")
 (load "complete")
 (load "desktop")
-;(load "flyspell")
-
-;;(emms-all)
-;;(emms-default-players)
-;;(setq emms-source-file-default-directory "~/music/")
 
 ;;;;
 ;;;; Options
@@ -64,6 +57,7 @@
 (setq-default indent-tabs-mode nil)                 ; no tab chars in sources
 (setq-default tab-width 8)                          ; default tab width in chars
 (setq-default truncate-lines t)                     ; don't wrap long lines
+(setq split-width-threshold nil)		    ; always split windows vertically
 (setq-default show-trailing-whitespace nil)
 (setq-default fill-column 72)
 (setq-default save-place t)
@@ -71,11 +65,13 @@
 (setq-default bm-buffer-persistence t)
 (setq-default ispell-dictionary "russian")
 (setq-default ff-search-directories
-      '("." ".." "../server" "../lib" "../send" "../eds" "../globals"
-        "/usr/include" "/usr/include/g++-3" "/usr/local/include/*"
-        "/usr/local/src/qt-x11-commercial-3.2.3/include"
-        "../lib" "../.."))
+      '("." ".."
+        "/usr/include"
+        "/usr/include/c++/4.4/*"
+        "/opt/qtsdk-2010.05/qt/include/*"))
 ;;;;
+(setq x-meta-keysym 'super)
+(setq x-super-keysym 'meta)
 (setq default-indicate-empty-lines nil)
 (setq backup-by-copying t)
 (setq case-fold-file-names nil)
@@ -132,12 +128,6 @@
 (setq printer-name "telecom")
 (setq ps-print-color-p nil)
 (setq ps-multibyte-buffer 'bdf-font)
-(setq telnet-host-properties '(("mordor" "telnet" "zuav")
-                               ("anorien" "telnet" "zuav")
-                               ("deadmarshes" "telnet" "zuav")
-                               ("barrow-downs" "telnet" "zuav")
-                               ("mirkwood" "/home/zuav/src/scripts/telnet-mirkwood.sh" "zuav")
-                               ("deadmarshes" "telnet" "zuav")))
 (setq font-lock-maximum-size nil)
 (setq font-lock-maximum-decoration t)
 (setq bbdb-file "~/lib/personal/bbdb"
@@ -147,17 +137,8 @@
       bbdb/news-auto-create-p nil)
 (setq dired-recursive-deletes 'top
       dired-recursive-copies 'top)
-(setq user-mail-address            "azhukov@unison.com"
-      send-mail-function           'smtpmail-send-it
-      message-send-mail-function   'smtpmail-send-it
-      smtpmail-smtp-server         "smtp.unison.org"
-      smtpmail-smtp-service        2525
-      smtpmail-auth-credentials    "~/.authinfo"
-      smtpmail-starttls-credentials '(("smtp.unison.org" 2525 "azhukov" nil))
-      smtpmail-debug-info          nil
-      smtpmail-debug-verb          nil)
-(setq doc-view-ghostscript-options
-      '("-dNOPAUSE" "-sDEVICE=png16m" "-dTextAlphaBits=4" "-dBATCH" "-dGraphicsAlphaBits=4" "-dQUIET" "-r160"))
+(setq doc-view-resolution          180
+      doc-view-cache-directory     "/var/tmp/docview1000")
 (setq bm-repository-size 10000)
 (setq zuav-fidogate-passwd 499679240)
 (setq c-default-style '((c++-mode . "stroustrup") (other . "stroustrup")))
@@ -165,7 +146,6 @@
 (setq w3m-home-page                     "about://bookmark/"
       w3m-use-cookies                   t
       w3m-command-arguments             (nconc w3m-command-arguments '("-cookie"))
-      ;w3m-no-proxy-domains              '("timetrack.unison.local" "wiki.unison.local" "bugz.unison.org" "spb.unison.org")
       w3m-default-display-inline-images t)
 (setq line-number-display-limit-width 2000)
 (setq auto-mode-alist
@@ -178,6 +158,16 @@
       mpg123-lazy-check            "mp3")
 (setq auto-insert-query nil)                     ; autotype, copyright, etc
 (setq inferior-lisp-program "/usr/bin/sbcl")
+(setq jabber-roster-show-title  nil
+      jabber-roster-line-format " %c %-25n %u %-8s  %S")
+(setq user-mail-address             "zhukov@altell.ru"
+      send-mail-function            'smtpmail-send-it
+      message-send-mail-function    'smtpmail-send-it
+      smtpmail-smtp-server          "mail.altell.local"
+      smtpmail-auth-credentials     (expand-file-name "~/.authinfo")
+      smtpmail-debug-info           t
+      smtpmail-debug-verb           t)
+
 
 ;;;;
 ;;;; Turn on or off some modes and features
@@ -197,6 +187,9 @@
 (show-paren-mode)                       ; hilight corresp. parenthies
 (partial-completion-mode)               ; smart name completetion
 (bar-cursor-mode 1)                     ; change cursor from bar to block in overwrite mode
+(desktop-save-mode 1)
+(windmove-default-keybindings)
+(semantic-mode 1)
 
 (autoload 'switch-to-other-buffer        "lucid"      "Switch to the previous buffer." t nil)
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil                              t)
@@ -204,22 +197,20 @@
 (autoload 'rfcview-mode                  "rfcview"    nil                              t)
 ;;
 (add-to-list 'warning-suppress-types '(undo discard-info))
+;;--;;(add-to-list 'tramp-default-proxies-alist
+;;--;;             '("erebor\\.unison\\.local\\'" "\\`root\\'" "/ssh:%h:"))
+
 ;;;;
+;;;; hooks
 ;;;;
-;;;;
-(add-hook 'erlang-mode-hook '(lambda () (add-hook 'local-write-file-hooks
-                                                 'delete-trailing-whitespace)))
+(add-hook 'erlang-mode-hook '(lambda () (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)))
 (add-hook 'erlang-mode-hook '(lambda () (setq show-trailing-whitespace t)))
-;;;;
 ;;;; Shell mode
-;;;;
 (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
 (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-hook 'shell-mode-hook '(lambda () (setq tab-width 8)))
-;;;;
 ;;;; bookmark package (bm)
-;;;;
 (add-hook 'after-init-hook 'bm-repository-load)
 (add-hook 'find-file-hooks 'bm-buffer-restore)
 (add-hook 'kill-buffer-hook 'bm-buffer-save)
@@ -228,25 +219,15 @@
 (add-hook 'after-revert-hook 'bm-buffer-restore)
 (set-face-background 'bm-persistent-face "DarkOrange1")
 (set-face-background 'bm-face            "tomato")
-;;;;
 ;;;; w3m mode
-;;;;
 (add-hook 'w3m-mode-hook '(lambda ()
                             (local-unset-key [up])
                             (local-unset-key [down])
                             (local-unset-key [left])
                             (local-unset-key [right])))
-;;;;
-;;;; redefine this ansi-term's functions to enable cursor
-;;;; keys under win2000 telnet
-;;;;
-(defun term-send-up    () (interactive) (term-send-raw-string "\e[A"))
-(defun term-send-down  () (interactive) (term-send-raw-string "\e[B"))
-(defun term-send-right () (interactive) (term-send-raw-string "\e[C"))
-(defun term-send-left  () (interactive) (term-send-raw-string "\e[D"))
-;;;;
+;;;; jabber client
+(add-hook 'jabber-post-connect-hooks 'jabber-autoaway-start)
 ;;;; CC mode
-;;;;
 (add-hook 'c-mode-common-hook '(lambda () (add-hook 'local-write-file-hooks
                                                     'delete-trailing-whitespace)))
 (add-hook 'c-mode-common-hook '(lambda () (setq c-comment-only-line-offset '(0 . 0))))
@@ -269,8 +250,6 @@
 (add-hook 'c-mode-common-hook '(lambda () (hs-minor-mode 1)))
 (add-hook 'c-mode-common-hook '(lambda () (setq indent-tabs-mode nil
                                                 tab-width 4)))
-;;;;
-;;;;
 ;;;;
 (add-hook 'python-mode-hook '(lambda ()
                                (setq show-trailing-whitespace t)
@@ -300,20 +279,42 @@
 ;;;;          '(lambda ()
 ;;;;             (local-set-key [f8] 'gud-next)
 ;;;;             (local-set-key [f7] 'gud-step)))
+;;;;
+;;;; Add color to the current GUD line (obrigado google)
+;;;;
+(defvar gud-overlay
+  (let* ((ov (make-overlay (point-min) (point-min))))
+    (overlay-put ov 'face 'secondary-selection) ov)
+  "Overlay variable for GUD highlighting.")
+
+(defadvice gud-display-line (after my-gud-highlight act)
+  "Highlight current line."
+  (let* ((ov gud-overlay)
+         (bf (gud-find-file true-file)))
+    (save-excursion
+      (set-buffer bf)
+      (move-overlay ov (line-beginning-position) (line-end-position)
+                    (current-buffer)))))
+
+(defun gud-kill-buffer ()
+  (if (eq major-mode 'gud-mode)
+      (delete-overlay gud-overlay)))
+
+(add-hook 'kill-buffer-hook 'gud-kill-buffer)
 
 ;;;;
 ;;;; default frame parameters
 ;;;;
 (cond (window-system
-       (progn
-         ;(set-frame-font "-monotype-Courier New-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
-         (setq default-frame-alist
-               (append '(;(cursor-color . "white")
-                         ;(background-mode . dark)
-                         ;(foreground-color . "gray85")
-                         ;(background-color . "black")
-                         (cursor-type . bar))
-                       default-frame-alist)))))
+       (setq default-frame-alist
+             (append '(;(cursor-color . "white")
+                       ;(background-mode . dark)
+                       ;(foreground-color . "gray85")
+                       ;(background-color . "black")
+                       (border-color . "black")
+                       (background-color . "white")
+                       (cursor-type . bar))
+                     default-frame-alist))))
 ;;;;
 ;;;;
 ;;;;
@@ -355,16 +356,16 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key [f9]              'zuav-compile)
 (global-set-key [f11]             'shell)
 (global-set-key [f12]             'ff-find-other-file)
-(global-set-key [M-f9]            'compile)
+(global-set-key [s-f9]            'compile)
 (global-set-key [M-right]         'forward-sexp)
 (global-set-key [M-left]          'backward-sexp)
 (global-set-key [S-f1]            'bm-previous)
 (global-set-key [S-f3]            'calendar)
-(global-set-key [A-f1]            'bm-toggle)
-(global-set-key [A-f2]            'apt-utils-search)
-(global-set-key [A-f3]            'zuav-kill-buffer)
-(global-set-key [A-tab]           'other-frame)
-(global-set-key [?\A-l]           'zuav-line-to-top-of-window)
+(global-set-key [s-f1]            'bm-toggle)
+(global-set-key [s-f2]            'apt-utils-search)
+(global-set-key [s-f3]            'zuav-kill-buffer)
+(global-set-key [s-tab]           'other-frame)
+(global-set-key [?\s-l]             'zuav-line-to-top-of-window)
 (global-set-key [home]            'beginning-of-line)
 (global-set-key [end]             'end-of-line)
 (global-set-key [kp-5]            'goto-line)
@@ -387,9 +388,9 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key "\C-ci"           'todo-insert-item)     ; insert new item
 (global-set-key "\C-x\C-d"        'dired)
 (global-set-key "\C-cd"           'dictionary-search)
-(global-set-key [?\A-0]           'buffer-menu)  ;    bs-show)
-(global-set-key [C-A-delete]      'xlock)
-(global-set-key [C-A-kp-delete]   'xlock)
+(global-set-key [?\s-0]           'buffer-menu)  ;    bs-show)
+;(global-set-key [C-A-delete]      'xlock)
+;(global-set-key [C-A-kp-delete]   'xlock)
 (global-set-key "\C-ch"           'hide-lines)
 (global-set-key "\C-x\C-\\" 'goto-last-change)
 ;;;;
@@ -400,16 +401,16 @@ Replaces three keystroke sequence C-u 0 C-l."
 ;;
 (define-key c++-mode-map [C-prior] 'c-beginning-of-defun)
 (define-key c++-mode-map [C-next]  'c-end-of-defun)
-(define-key c++-mode-map [?\A-\]]  'zuav-find-next-close-curly)
-(define-key c++-mode-map [?\A-\[]  'zuav-find-prev-open-curly)
+(define-key c++-mode-map [?\s-\]]  'zuav-find-next-close-curly)
+(define-key c++-mode-map [?\s-\[]  'zuav-find-prev-open-curly)
 (define-key c++-mode-map [kp-add]  'hs-toggle-hiding)
 (define-key c-mode-map [kp-add]  'hs-toggle-hiding)
 ;;
 (define-key outline-mode-map [C--] 'hide-subtree)
 (define-key outline-mode-map [C-=] 'show-entry)
 ;;
-(define-key w3m-mode-map [A-left]  'w3m-previous-buffer)
-(define-key w3m-mode-map [A-right] 'w3m-next-buffer)
+(define-key w3m-mode-map [s-left]  'w3m-previous-buffer)
+(define-key w3m-mode-map [s-right] 'w3m-next-buffer)
 
 
 
@@ -470,12 +471,6 @@ Replaces three keystroke sequence C-u 0 C-l."
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-;;;
-;;; EUC
-;;;
-(setq eudc-server   "unison.project.org")
-(setq eudc-protocol 'ldap)
-
 ;;;;
 ;;;; Insidious Big Brother Database (bbdb)
 ;;;;
@@ -487,76 +482,35 @@ Replaces three keystroke sequence C-u 0 C-l."
 (add-hook 'find-file-hooks  'auto-insert)
 (add-hook 'before-save-hook 'copyright-update)
 
-; todo: ask for params
-(defun psi ()
-  "Start PSI."
+(defun googleearth ()
+  "Start googleearth."
   (interactive)
-  (call-process "/usr/bin/psi" nil 0 nil))
+  (call-process "/usr/bin/googleearth" nil 0 nil))
 
-(defun unison ()
-  "Start Unison Client program."
+(defun icedove ()
+  "Start IceDove program."
   (interactive)
-  (call-process "/usr/bin/start_unison" nil 0 nil))
-
-(defun vncviewer ()
-  "Start vncviewer program."
-  (interactive)
-  (call-process "xtightvncviewer" nil 0 nil "-passwd" "/home/zuav/.vnc/passwd" "10.10.18.80"))
-
-(defun vmware ()
-  "Start VmWare program."
-  (interactive)
-  (call-process "vmware" nil 0 nil))
-
-(defun kchmviewer ()
-  "Start kchmviewer program."
-  (interactive)
-  (call-process "kchmviewer" nil 0 nil))
-
-(defun ldap-browser ()
-  "Start LDAP browser program (GQ)."
-  (interactive)
-  (start-process "luma" "luma" "luma"))
-
-(defun virtual-box ()
-  "Start VirtualBox program."
-  (interactive)
-  (start-process "VirtualBox" "VirtualBox" "VirtualBox"))
+  (call-process "/usr/bin/icedove" nil 0 nil))
 
 (defun mozilla-thunderbird ()
-  "Start Thunderbird program."
+  "Start icedove program."
   (interactive)
-  (start-process "mozilla-thunderbird" "mozilla-thunderbird" "mozilla-thunderbird"))
-
-(defun xpat2 ()
-  "Start xpat2 program."
-  (interactive)
-  (call-process "xpat2" nil 0 nil))
-
-(defun wfica ()
-  "Start wfica program - win terminal client."
-  (interactive)
-  (call-process "/usr/local/lib/ICAClient/wfica" nil 0 nil))
-
-(defun mozilla ()
-  "Start mozilla browser."
-  (interactive)
-  (call-process "mozilla" nil 0 nil))
+  (start-process "icedove" "icedove" "icedove"))
 
 (defun firefox ()
   "Start firefox browser."
   (interactive)
   (call-process "iceweasel" nil 0 nil))
 
+(defun virtualbox ()
+  "Start VirtualBox."
+  (interactive)
+  (call-process "virtualbox" nil 0 nil))
+
 (defun xfig ()
   "Start xfig program"
   (interactive)
   (call-process "xfig" nil 0 nil))
-
-(defun gv ()
-  "Start gv program"
-  (interactive)
-  (start-process "gv" "gv" "gv"))
 
 (defun xpdf ()
   "Start xpdf program"
@@ -568,75 +522,6 @@ Replaces three keystroke sequence C-u 0 C-l."
   (interactive)
   (call-process "k3b" nil 0 nil))
 
-(defun xlock ()
-  "Start xlock program"
-  (interactive)
-  (call-process "xlock"
-                nil
-                0
-                nil
-                "+echokeys" "-mode" "cage" "-delay" "34000"))
-
-(defun imsclient-old ()
-  "Start IMS Client program."
-  (interactive)
-  (call-process "/home/zuav/src/smail-branch-4.1/qtclient/linux-i86/debug/imsclient"
-                nil
-                0
-                nil
-                "-c" "/home/zuav/src/smail-branch-4.1/test/ims/etc/conf.client"))
-
-(defun imsclient ()
-  "Start IMS Client program (IMS version 5)."
-  (interactive)
-  (call-process "/home/zuav/src/smail/qtclient/linux-i386/debug/imsclient"
-                nil
-                0
-                nil
-                "-s" "libintnulsecfs-linux-2.1.0.so"
-                "-font" "-monotype-courier new-medium-r-normal-*-17-*-100-100-p-*-koi8-r"
-                "-c" "/home/zuav/ims/client/etc/conf"))
-
-(defun imsclient-telecom ()
-  "Start IMS Client program with Khazad-Dum."
-  (interactive)
-  (call-process "/home/zuav/src/smail/qtclient/linux-i86/debug/imsclient"
-                nil
-                0
-                nil
-                "-s" "libintnulsecfs-1.13.2.so"
-                "-font" "-monotype-courier new-medium-r-normal-*-17-*-100-100-p-*-koi8-r"
-                "-c" "/home/zuav/ims/etc/conf"
-                "--no-detach"))
-
-(defun imsclient-root ()
-  "Start IMS Client program (IMS version 5)."
-  (interactive)
-  (call-process "/home/zuav/src/smail/qtclient/linux-i86/debug/imsclient"
-                nil
-                0
-                nil
-                "-font" "-monotype-courier new-medium-r-normal-*-17-*-100-100-p-*-koi8-r"
-                "-c" "/home/zuav/src/smail/test/ims/client/etc/conf-root"))
-
-(defun imsadmin ()
-  "Start IMS Admin program (IMS version 5)."
-  (interactive)
-  (call-process "/home/zuav/ims/server/bin/imsadm"
-                nil
-                0
-                nil
-                "-l" "debug" "-f" "/home/zuav/ims/server/log/imsadm-devel.log"))
-
-(defun imsprepmsg ()
-  "Start IMS Prepare Message program (IMS version 5)."
-  (interactive)
-  (call-process "/home/zuav/src/smail/qtprepare/linux-i86/debug/imsprepmsg"
-                nil
-                0
-                nil
-                "-c" "/home/zuav/src/smail/test/ims/client/etc/conf"))
-
 (defun mplayer (options file)
   "Start mplayer program"
   (interactive "sOptions: \nfView file: ")
@@ -644,47 +529,11 @@ Replaces three keystroke sequence C-u 0 C-l."
   (setq options (concat "-fs " options))
   (apply 'start-process "mplayer" "mplayer" "mplayer" (append (split-string options) (list file))))
 
-(defun acroread (file)
-  "Start Acrobat Reader"
-  (interactive "fView file: ")
-  (setq file (expand-file-name file))
-  (apply 'start-process "acroread" "acroread" "acroread" (list file)))
-
-
-
 (defun soffice (file)
   "Start OpenOffice program with file to edit"
   (interactive "fFile name: ")
   (setq file (expand-file-name file))
   (apply 'call-process "soffice" nil 0 nil (list file)))
-
-(defun doom ()
-  "Start Doom"
-  (interactive)
-  (call-process "/usr/games/lxdoom"
-                nil
-                0
-                nil
-                "-iwad" "/usr/local/games/doom/doom.wad"))
-
-(defun doom-2 ()
-  "Start Doom II"
-  (interactive)
-  (call-process "/usr/games/lxdoom"
-                nil
-                0
-                nil
-                "-iwad" "/usr/local/games/doom/doom2.wad"))
-
-(defun mahjong ()
-  "Start the game of Mahjong"
-  (interactive)
-  (call-process "/usr/games/xmahjongg"
-                nil
-                0
-                nil
-                "--background" "green" "--tileset" "real" "--solvable-boards" "--layout" "papillon"))
-;;                "--background" "green" "--tileset" "real" "--solvable-boards" "--layout" "farandole"))
 
 (defun dvd (track)
   "Run mplayer to View DVD."
@@ -737,39 +586,6 @@ Replaces three keystroke sequence C-u 0 C-l."
   "Just run make without prompting."
   (interactive)
   (compile compile-command))
-
-;; todo: если уже есть открытый буфер с именем *w3m*,
-;;         его надо  сначала во что-то переименовать,
-;;         открыть stl-doc буфер, и вернуть *w3m* обратно.
-;;       сделать универсальную функцию для открытия указанного
-;;         файла с помощью w3m в буфере с заданным именем.
-;;-;;(defun stl-doc ()
-;;-;;  "Open stl's index.html with w3m in stl-doc buffer."
-;;-;;  (interactive)
-;;-;;  (let* ((stl-doc-index-file "/usr/share/doc/stl-manual/html/index.html")
-;;-;;         (stl-doc-buffer-name "stl-doc")
-;;-;;         (stl-doc-w3m-default-buffer-name "*w3m*")
-;;-;;         (buffer (get-buffer stl-doc-buffer-name)))
-;;-;;    (if (null buffer)
-;;-;;        (progn (w3m-find-file stl-doc-index-file)
-;;-;;               (setq buffer (get-buffer stl-doc-w3m-default-buffer-name)) 
-;;-;;               (set-buffer buffer)
-;;-;;               (rename-buffer stl-doc-buffer-name)))
-;;-;;    (switch-to-buffer buffer)))
-;;-;;
-;;-;;(defun postgresql-doc ()
-;;-;;  "Open PostgreSQL's index.html with w3m in postgresql-doc buffer."
-;;-;;  (interactive)
-;;-;;  (let* ((postgresql-doc-index-file "/usr/share/doc/postgresql-doc/html/index.html")
-;;-;;         (postgresql-doc-buffer-name "postgresql-doc")
-;;-;;         (postgresql-doc-w3m-default-buffer-name "*w3m*")
-;;-;;         (buffer (get-buffer postgresql-doc-buffer-name)))
-;;-;;    (if (null buffer)
-;;-;;        (progn (w3m-find-file postgresql-doc-index-file)
-;;-;;               (setq buffer (get-buffer postgresql-doc-w3m-default-buffer-name)) 
-;;-;;               (set-buffer buffer)
-;;-;;               (rename-buffer postgresql-doc-buffer-name)))
-;;-;;    (switch-to-buffer buffer)))
 
 ;;;;
 ;;;; Function from gnu.emacs.sources
@@ -870,35 +686,6 @@ maybe accessed via the corresponding tramp method."
      (setq tetris-score-file "/home/zuav/lib/personal/tetris-scores")))
 
 
-(defun zuav-telnet-to-host (hostname type &optional )
-  "Telnet to HOSTNAME host or just switch to buffer with respective name."
-  (let* ((buffer (get-buffer hostname)))
-    (if (null buffer)
-        (progn (telnet hostname)
-               (rename-buffer hostname)
-               (make-variable-buffer-local 'telnet-new-line)
-               (if (equal type "win32")
-                   (progn (setq telnet-new-line "\r\n")
-                          (set-buffer-process-coding-system 'alternativnyj 'alternativnyj)))
-               (cd (expand-file-name "~")))
-      (switch-to-buffer buffer))))
-
-(defun barrow-downs ()
-  (interactive)
-  (zuav-telnet-to-host "barrow-downs" "unix"))
-
-(defun anorien ()
-  (interactive)
-  (zuav-telnet-to-host "anorien" "unix"))
-
-(defun mordor ()
-  (interactive)
-  (zuav-telnet-to-host "mordor" "win32"))
-
-(defun deadmarshes ()
-  (interactive)
-  (zuav-telnet-to-host "deadmarshes" "unix"))
-
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -906,8 +693,9 @@ maybe accessed via the corresponding tramp method."
   ;; If there is more than one, they won't work right.
  '(browse-url-browser-function (quote browse-url-firefox))
  '(canlock-password "b600beba9651f7c871f347668e74849f7fc7b8fb")
- '(jabber-account-list (quote (("zuav@ithilien.unison.local" (:password . "qwerty12") (:network-server . "ithilien.unison.local") (:connection-type . network)) ("bilbo@ithilien.unison.local" (:password . "qwerty12") (:network-server . "ithilien.unison.local") (:connection-type . network)))))
- '(ldap-host-parameters-alist (quote (("ldap.unisonproject.com" binddn "uid=root,cn=admins,cn=system" passwd "LKdjoi32kasda" auth simple)))))
+ '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)) ("a_zhukov@im" (:connection-type . network)))))
+ '(jabber-alert-message-hooks (quote (jabber-message-scroll)))
+ '(jabber-alert-presence-hooks nil))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -919,8 +707,8 @@ maybe accessed via the corresponding tramp method."
 ;;;;
 ;;;; Load save sessions support
 ;;;;
-(desktop-load-default)
-(desktop-read)
+;;-;;(desktop-load-default)
+;;-;;(desktop-read)
 (savehist-load)
 
 ;;;;
@@ -929,6 +717,6 @@ maybe accessed via the corresponding tramp method."
 ;(zuav-run-once 'gnus)
 ;(zuav-run-once 'todo-show)
 
-
+(server-start)
 
 ;;;; .emacs ends 
