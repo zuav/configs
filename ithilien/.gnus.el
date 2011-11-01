@@ -1,18 +1,28 @@
 ;;; .gnus.el --- Gnus
 
-;; Copyright (C) 2006, 2007, 2009, 2010, 2011  Alexander Zhuckov
+;; Copyright (C) 2006, 2007, 2009, 2010, 2011  Alexander Zhukov
 
-;; Author: Alexander Zhuckov
+;; Author: Alexander Zhukov
 ;; Keywords: extensions
 
 ;;; Commentary:
 
 ;; 
+
+;;; Code:
 (require 'gnus-demon)
+(require 'smtpmail)
 
 (gnus-demon-add-handler 'gnus-demon-scan-news 30 7)
 
-;;; Code:
+(setq user-mail-address             "zhukov@altell.ru"
+      send-mail-function            'smtpmail-send-it
+      message-send-mail-function    'smtpmail-send-it
+      smtpmail-smtp-server          "mail.altell.local"
+      smtpmail-auth-credentials     (expand-file-name "~/.authinfo")
+      smtpmail-debug-info           t
+      smtpmail-debug-verb           t)
+
 (setq gnus-select-method '(nntp "news.eternal-september.org"))
 
 (setq gnus-secondary-select-methods
@@ -27,13 +37,21 @@
              (nnml-get-new-mail nil)))
 
 (setq nnimap-split-crosspost nil
+      nnimap-split-inbox     "INBOX"
       imap-log               nil)
+
+(setq nnimap-split-rule
+      '(("INBOX.cleanvm-trustedarm"   "^Subject: trustedarm.*build on .+")
+        ("INBOX.cleanvm-apkr10"       "^Subject: apkr10.*build on .+")
+        ("INBOX.cleanvm-bereg"        "^Subject: bereg.*build on .+")
+        ("INBOX.cleanvm-seosvt"       "^Subject: seosvt.*build on .+")
+        ("INBOX.cleanvm"              "^From: CleanVM bot .*")
+        ("INBOX.cron-daemon"          "^From: .*(Cron Daemon)$")
+        ("INBOX.tasks"                "^From: TeamForge Administrator.*")))
 
 (setq gnus-visual           t
       gnus-large-newsgroup  2000
       gnus-read-active-file 'some)
-
-(setq nnrss-ignore-article-fields '(description slash:comments slash:hit_parade lj:reply-count))
 
  ;; let Gnus change the "From:" line by looking at current group we are in.
 (setq gnus-posting-styles
@@ -41,22 +59,5 @@
         ("ejabberd"         (address "zuav@yandex.ru"))
         ("debian-announce"  (address "zuav@yandex.ru"))
         ("debian-russian"   (address "zuav@yandex.ru"))))
-
-;; support for Atom 
-(require 'mm-url)
-(defadvice mm-url-insert (after DE-convert-atom-to-rss () )
-  "Converts atom to RSS by calling xsltproc."
-  (when (re-search-forward "xmlns=\"http://www.w3.org/.*/Atom\"" 
-                           nil t)
-    (goto-char (point-min))
-    (message "Converting Atom to RSS... ")
-    (call-process-region (point-min) (point-max) 
-                         "xsltproc" 
-                         t t nil 
-                         (expand-file-name "~/atom2rss.xsl") "-")
-    (goto-char (point-min))
-    (message "Converting Atom to RSS... done")))
-
-(ad-activate 'mm-url-insert)
 
 ;;; .gnus.el ends here

@@ -1,12 +1,11 @@
-;;;; -*- coding: koi8 -*-
 ;;;;
-;;;; Alexander Zhuckov's Emacs configuration file
+;;;; Emacs configuration file
+;;;; by
+;;;; Alexander Zhukov
 ;;;;
 ;;;; 11.03.1996 -- but I think it was really
 ;;;; created somewhere in Jan, 1996 or even early
 ;;;;
-
-;;;; $Id: emacs.el,v 1.8 2001/04/02 07:18:34 zuav Exp $
 
 (add-to-list 'load-path (expand-file-name "~/src/elisp"))
 
@@ -29,14 +28,12 @@
 (require 'saveplace)
 (require 'warnings)
 (require 'outline)
-(require 'smtpmail)
 ;;
 (require 'bbdb)
 (require 'w3m)
 (require 'jabber)
 ;;
 (require 'psed)
-(require 'psvn)
 (require 'bm)
 (require 'bar-cursor)
 (require 'ssh)
@@ -70,7 +67,7 @@
         "/usr/include/c++/4.4/*"
         "/opt/qtsdk-2010.05/qt/include/*"))
 ;;;;
-(setq x-meta-keysym 'super)
+(setq x-meta-keysym 'alt)
 (setq x-super-keysym 'meta)
 (setq default-indicate-empty-lines nil)
 (setq backup-by-copying t)
@@ -111,8 +108,9 @@
       display-time-24hr-format   t
       display-time-mail-file     "/var/spool/mail/zuav"
       display-time-use-mail-icon t)
-(setq ediff-diff-options "-w")                       ; ignore changes in whitespace
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq ediff-diff-options "-w"                       ; ignore changes in whitespace
+      ediff-split-window-function 'split-window-horizontally
+      ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq emerge-diff-options "-w")                      ; ignore changes in whitespace
 (setq tramp-default-method "scp")
 (setq password-cache-expiry nil)                     ; for tramp
@@ -147,6 +145,7 @@
       w3m-use-cookies                   t
       w3m-command-arguments             (nconc w3m-command-arguments '("-cookie"))
       w3m-default-display-inline-images t)
+(setq browse-url-browser-function 'w3m-browse-url)
 (setq line-number-display-limit-width 2000)
 (setq auto-mode-alist
       (cons '("/\\(rfc\\|std\\)[0-9]+\\.txt\\(\\.gz\\)?\\'" . rfcview-mode)
@@ -159,14 +158,7 @@
 (setq auto-insert-query nil)                     ; autotype, copyright, etc
 (setq inferior-lisp-program "/usr/bin/sbcl")
 (setq jabber-roster-show-title  nil
-      jabber-roster-line-format " %c %-25n %u %-8s  %S")
-(setq user-mail-address             "zhukov@altell.ru"
-      send-mail-function            'smtpmail-send-it
-      message-send-mail-function    'smtpmail-send-it
-      smtpmail-smtp-server          "mail.altell.local"
-      smtpmail-auth-credentials     (expand-file-name "~/.authinfo")
-      smtpmail-debug-info           t
-      smtpmail-debug-verb           t)
+      jabber-roster-line-format " %c %-30n %u %-8s  %S")
 
 
 ;;;;
@@ -191,7 +183,6 @@
 (windmove-default-keybindings)
 (semantic-mode 1)
 
-(autoload 'switch-to-other-buffer        "lucid"      "Switch to the previous buffer." t nil)
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil                              t)
 (autoload 'hide-lines                    "hide-lines" "Hide lines based on a regexp"   t)
 (autoload 'rfcview-mode                  "rfcview"    nil                              t)
@@ -255,6 +246,11 @@
                                (setq show-trailing-whitespace t)
                                (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)
                                (setq-default indent-tabs-mode t)))
+;;;;
+(add-hook 'todo-mode-hook 'hl-line-mode)
+
+;;;;
+(add-hook 'dired-mode-hook 'hl-line-mode)
 
 (defun zuav-find-next-close-curly ()
   (interactive)
@@ -307,13 +303,15 @@
 ;;;;
 (cond (window-system
        (setq default-frame-alist
-             (append '(;(cursor-color . "white")
-                       ;(background-mode . dark)
-                       ;(foreground-color . "gray85")
-                       ;(background-color . "black")
-                       (border-color . "black")
-                       (background-color . "white")
-                       (cursor-type . bar))
+             (append '((cursor-type . bar)
+                       (background-mode . dark)
+                       (foreground-color . "gray85")
+                       (background-color . "black")
+                       (cursor-color . "white")
+                       ;(border-width . 1)
+                       ;(border-color . "black")
+                       ;(background-color . "white")
+                       )
                      default-frame-alist))))
 ;;;;
 ;;;;
@@ -332,6 +330,11 @@ If current buffer is not in the Emasc Lisp mode, signal error."
 Replaces three keystroke sequence C-u 0 C-l."
   (interactive)
   (recenter 0))
+
+(defun switch-to-other-buffer ()
+  (interactive)
+  (switch-to-buffer (other-buffer)))
+
 
 ;;;;
 ;;;; Global keybindings
@@ -356,16 +359,16 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key [f9]              'zuav-compile)
 (global-set-key [f11]             'shell)
 (global-set-key [f12]             'ff-find-other-file)
-(global-set-key [s-f9]            'compile)
+(global-set-key [A-f9]            'compile)
 (global-set-key [M-right]         'forward-sexp)
 (global-set-key [M-left]          'backward-sexp)
 (global-set-key [S-f1]            'bm-previous)
 (global-set-key [S-f3]            'calendar)
-(global-set-key [s-f1]            'bm-toggle)
-(global-set-key [s-f2]            'apt-utils-search)
-(global-set-key [s-f3]            'zuav-kill-buffer)
-(global-set-key [s-tab]           'other-frame)
-(global-set-key [?\s-l]             'zuav-line-to-top-of-window)
+(global-set-key [A-f1]            'bm-toggle)
+(global-set-key [A-f2]            'apt-utils-search)
+(global-set-key [A-f3]            'zuav-kill-buffer)
+(global-set-key [A-tab]           'other-frame)
+(global-set-key [?\A-l]           'zuav-line-to-top-of-window)
 (global-set-key [home]            'beginning-of-line)
 (global-set-key [end]             'end-of-line)
 (global-set-key [kp-5]            'goto-line)
@@ -388,11 +391,12 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key "\C-ci"           'todo-insert-item)     ; insert new item
 (global-set-key "\C-x\C-d"        'dired)
 (global-set-key "\C-cd"           'dictionary-search)
-(global-set-key [?\s-0]           'buffer-menu)  ;    bs-show)
+(global-set-key [?\A-0]           'buffer-menu)  ;    bs-show)
 ;(global-set-key [C-A-delete]      'xlock)
 ;(global-set-key [C-A-kp-delete]   'xlock)
 (global-set-key "\C-ch"           'hide-lines)
-(global-set-key "\C-x\C-\\" 'goto-last-change)
+(global-set-key "\C-x\C-\\"       'goto-last-change)
+(global-set-key (kbd "C-c g")     'google-word-at-point)
 ;;;;
 ;;;; Modes specific keybindings
 ;;;;
@@ -401,16 +405,16 @@ Replaces three keystroke sequence C-u 0 C-l."
 ;;
 (define-key c++-mode-map [C-prior] 'c-beginning-of-defun)
 (define-key c++-mode-map [C-next]  'c-end-of-defun)
-(define-key c++-mode-map [?\s-\]]  'zuav-find-next-close-curly)
-(define-key c++-mode-map [?\s-\[]  'zuav-find-prev-open-curly)
+(define-key c++-mode-map [?\A-\]]  'zuav-find-next-close-curly)
+(define-key c++-mode-map [?\A-\[]  'zuav-find-prev-open-curly)
 (define-key c++-mode-map [kp-add]  'hs-toggle-hiding)
 (define-key c-mode-map [kp-add]  'hs-toggle-hiding)
 ;;
 (define-key outline-mode-map [C--] 'hide-subtree)
 (define-key outline-mode-map [C-=] 'show-entry)
 ;;
-(define-key w3m-mode-map [s-left]  'w3m-previous-buffer)
-(define-key w3m-mode-map [s-right] 'w3m-next-buffer)
+(define-key w3m-mode-map [A-left]  'w3m-previous-buffer)
+(define-key w3m-mode-map [A-right] 'w3m-next-buffer)
 
 
 
@@ -482,6 +486,21 @@ Replaces three keystroke sequence C-u 0 C-l."
 (add-hook 'find-file-hooks  'auto-insert)
 (add-hook 'before-save-hook 'copyright-update)
 
+(defun lindon ()
+  "Start lindon virtual machine."
+  (interactive)
+  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "lindon"))
+
+(defun mordor ()
+  "Start mordor virtual machine."
+  (interactive)
+  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "mordor"))
+
+(defun qtdesigner ()
+  "Start Qt Designer."
+  (interactive)
+  (call-process "/opt/qtsdk-2010.05/qt/bin/designer" nil 0 nil))
+
 (defun googleearth ()
   "Start googleearth."
   (interactive)
@@ -496,6 +515,12 @@ Replaces three keystroke sequence C-u 0 C-l."
   "Start icedove program."
   (interactive)
   (start-process "icedove" "icedove" "icedove"))
+
+
+(defun chrome ()
+  "Start Chrome browser."
+  (interactive)
+  (call-process "google-chrome" nil 0 nil))
 
 (defun firefox ()
   "Start firefox browser."
@@ -628,6 +653,16 @@ will return point to the current position."
       (error "Buffer not modified"))))
 
 
+(defun google-word-at-point ()
+  (interactive)
+  (let ((word (thing-at-point 'word)))
+    (if word
+        (funcall browse-url-browser-function
+                 (concat "http://www.google.com/search?q="
+                         (url-hexify-string word)))
+      (error "No word at point!"))))
+
+
 (defvar find-file-root-prefix "/sudo:root@localhost:"
 "*The filename prefix used to open a file with `find-file-root'.
 This should look something like \"/sudo:root@localhost:\" (new style
@@ -691,7 +726,6 @@ maybe accessed via the corresponding tramp method."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(browse-url-browser-function (quote browse-url-firefox))
  '(canlock-password "b600beba9651f7c871f347668e74849f7fc7b8fb")
  '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)) ("a_zhukov@im" (:connection-type . network)))))
  '(jabber-alert-message-hooks (quote (jabber-message-scroll)))
