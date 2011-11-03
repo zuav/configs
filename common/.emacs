@@ -171,7 +171,7 @@
 (scroll-bar-mode '-1)	                ; no scroll-bar. I hate it too
 (auto-compression-mode 1)               ; turn on autodecompression of gz etc
 (display-time-mode 1)                   ; turn on time display
-(mouse-avoidance-mode 'none)            ; !(remove mouse to upper right corner)
+(mouse-avoidance-mode 'banish)          ; remove mouse to upper right corner
 (mouse-wheel-mode 1)                    ; turn on mouse wheel
 (desktop-save-mode 1)                   ; automatically save desktop on exit
 (size-indication-mode 1)                ; show size of the current file in the mode line
