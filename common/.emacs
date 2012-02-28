@@ -135,8 +135,7 @@
       bbdb/news-auto-create-p nil)
 (setq dired-recursive-deletes 'top
       dired-recursive-copies 'top)
-(setq doc-view-resolution          180
-      doc-view-cache-directory     "/var/tmp/docview1000")
+(setq doc-view-cache-directory     "/var/tmp/docview1000")
 (setq bm-repository-size 10000)
 (setq zuav-fidogate-passwd 499679240)
 (setq c-default-style '((c++-mode . "stroustrup") (other . "stroustrup")))
@@ -495,6 +494,16 @@ Replaces three keystroke sequence C-u 0 C-l."
   "Start mordor virtual machine."
   (interactive)
   (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "mordor"))
+
+(defun harad ()
+  "Start harad virtual machine."
+  (interactive)
+  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "harad"))
+
+(defun calibre ()
+  "Start Calibre."
+  (interactive)
+  (call-process "/opt/calibre/calibre" nil 0 nil))
 
 (defun qtdesigner ()
   "Start Qt Designer."
