@@ -180,7 +180,7 @@
 (bar-cursor-mode 1)                     ; change cursor from bar to block in overwrite mode
 (desktop-save-mode 1)
 (windmove-default-keybindings)
-(semantic-mode 1)
+;;(semantic-mode nil)			; todo: 
 
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil                              t)
 (autoload 'hide-lines                    "hide-lines" "Hide lines based on a regexp"   t)
@@ -244,7 +244,7 @@
 (add-hook 'python-mode-hook '(lambda ()
                                (setq show-trailing-whitespace t)
                                (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)
-                               (setq-default indent-tabs-mode t)))
+                               (setq indent-tabs-mode t)))
 ;;;;
 (add-hook 'todo-mode-hook 'hl-line-mode)
 
