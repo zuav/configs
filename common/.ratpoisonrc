@@ -1,7 +1,11 @@
 defwinliststyle column
 defwingravity   center
 set padding 0 0 0 0
-set border 0
-set winfmt %f - %n - %a
+set border 1
+set fwcolor cyan
+set bwcolor black
+set font Mono-18
+set winfmt %x - %f - %n - %a
 escape C-z
 definekey root Tab nextscreen
+definekey root f   focus
