@@ -10,7 +10,7 @@ mkdir -p $backup_dir > /dev/null
 # create common config files
 #
 
-common_list=".ratpoisonrc .xbindkeysrc .xsession .emacs .environment"
+common_list=".ratpoisonrc .xbindkeysrc .xsession .emacs .environment .gitconfig"
 
 for i in $common_list
 do
