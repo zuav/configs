@@ -1,8 +1,7 @@
 # -*- mode: Shell-script -*-
 
-SUDO_PROMPT="Password: "
 GIT_PAGER=""
 EDITOR=emacsclient
-EMAIL="zhukov@altell.ru"
+EMAIL="zuav@yandex.ru"
 
-export SUDO_PROMPT GIT_PAGER EDITOR EMAIL
+export GIT_PAGER EDITOR EMAIL
