@@ -1,3 +1,4 @@
-deb http://emacs.orebokech.com lenny main
-deb-src http://emacs.orebokech.com lenny main
-
+#deb http://emacs.orebokech.com lenny main
+#deb-src http://emacs.orebokech.com lenny main
+deb http://emacs.naquadah.org/ stable/
+deb-src http://emacs.naquadah.org/ stable/

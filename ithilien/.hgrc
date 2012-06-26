@@ -1,0 +1,10 @@
+[web]
+cacerts = /etc/ssl/certs/work.pem
+
+[auth]
+bb.username = azhukov
+bb.password =
+bb.prefix   = https://hg.aintsys.com/
+
+[ui]
+username = Alexander Zhukov <az@aintsys.com>
