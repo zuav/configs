@@ -41,6 +41,7 @@
 (require 'sh-utils)
 (require 'top-mode)
 ;(require 'emacsd-tile)
+
 ;;;;
 ;;;; load libraries
 ;;;;
@@ -75,7 +76,13 @@
 (setq compile-command "make ")
 (setq compilation-scroll-output t)
 (setq dired-chown-program "/bin/chown")
-(setq european-calendar-style t)                    ; turn on european calendar style
+;;(setq european-calendar-style t)                    ; turn on european calendar style
+;;;(setq calendar-week-start-day   1
+;;;      calendar-day-name-array   ["Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
+;;;      calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" 
+;;;                                 "Июнь" "Июль" "Август" "Сентябрь"
+;;;                                 "Октябрь" "Ноябрь" "Декабрь"])
+(setq calendar-week-start-day   1)
 (setq kill-whole-line t)
 (setq line-number-mode t)
 (setq column-number-mode t)
@@ -159,6 +166,8 @@
 (setq jabber-roster-show-title  nil
       jabber-roster-line-format " %c %-30n %u %-8s  %S")
 
+;;-;;(setq inferior-erlang-display-buffer-any-frame t
+;;-;;      inferior-erlang-machine-options          '("-sname" "emacs"))
 
 ;;;;
 ;;;; Turn on or off some modes and features
@@ -189,12 +198,27 @@
 (add-to-list 'warning-suppress-types '(undo discard-info))
 ;;--;;(add-to-list 'tramp-default-proxies-alist
 ;;--;;             '("erebor\\.unison\\.local\\'" "\\`root\\'" "/ssh:%h:"))
+(add-to-list 'ff-special-constructs 
+    ;; Erlang includes
+    '("^-include(\"\\(.*\\)\"" .
+      (lambda ()
+        (buffer-substring (match-beginning 1) (match-end 1)))))
 
 ;;;;
 ;;;; hooks
 ;;;;
+;;;; Erlang mode
 (add-hook 'erlang-mode-hook '(lambda () (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)))
-(add-hook 'erlang-mode-hook '(lambda () (setq show-trailing-whitespace t)))
+(add-hook 'erlang-mode-hook '(lambda () (setq show-trailing-whitespace t
+                                              tab-width 4
+                                              ff-search-directories '("."
+                                                                      "../include"
+                                                                      "../../*/include"
+                                                                      "../src"
+                                                                      "../../*/src")
+                                              ff-other-file-alist '(("\\.erl" (".hrl"))
+                                                                    ("\\.hrl" (".erl")))
+                                              )))
 ;;;; Shell mode
 (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
 (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
@@ -250,6 +274,13 @@
 
 ;;;;
 (add-hook 'dired-mode-hook 'hl-line-mode)
+;;;;
+;;;;
+;;;;
+(add-hook 'calendar-load-hook
+          (lambda ()
+            (calendar-set-date-style 'european)))
+
 
 (defun zuav-find-next-close-curly ()
   (interactive)
@@ -753,6 +784,8 @@ maybe accessed via the corresponding tramp method."
 ;;-;;(desktop-load-default)
 ;;-;;(desktop-read)
 (savehist-load)
+
+;;(semantic-load-enable-code-helpers)
 
 ;;;;
 ;;;; Start automatically
