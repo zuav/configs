@@ -11,7 +11,7 @@ xset r rate 250 50
 xsetroot -solid black 
 xbindkeys
 
-~/src/bitcoin-qt -gen &
+~/src/bitcoin/bitcoin-qt -gen &
 
 #emacs -fs -fn "-monotype-courier new-medium-r-normal-*-18-*-*-*-*-*-*" &
 # 10.10.2011 -- 37
