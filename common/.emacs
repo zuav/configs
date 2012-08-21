@@ -28,6 +28,7 @@
 (require 'saveplace)
 (require 'warnings)
 (require 'outline)
+(require 'smtpmail)
 ;;
 (require 'bbdb)
 (require 'w3m)
@@ -46,7 +47,7 @@
 ;;;; load libraries
 ;;;;
 (load "paren")
-(load "complete")
+;(load "complete")
 (load "desktop")
 
 ;;;;
@@ -55,7 +56,6 @@
 (setq-default indent-tabs-mode nil)                 ; no tab chars in sources
 (setq-default tab-width 8)                          ; default tab width in chars
 (setq-default truncate-lines t)                     ; don't wrap long lines
-(setq split-width-threshold nil)		    ; always split windows vertically
 (setq-default show-trailing-whitespace nil)
 (setq-default fill-column 72)
 (setq-default save-place t)
@@ -68,6 +68,7 @@
         "/usr/include/c++/4.4/*"
         "/opt/qtsdk-2010.05/qt/include/*"))
 ;;;;
+(setq split-width-threshold nil)		    ; always split windows vertically
 (setq x-meta-keysym 'alt)
 (setq x-super-keysym 'meta)
 (setq default-indicate-empty-lines nil)
@@ -76,13 +77,20 @@
 (setq compile-command "make ")
 (setq compilation-scroll-output t)
 (setq dired-chown-program "/bin/chown")
-;;(setq european-calendar-style t)                    ; turn on european calendar style
-;;;(setq calendar-week-start-day   1
+(setq user-mail-address             "zuav@yandex.ru"
+      send-mail-function            'smtpmail-send-it
+      message-send-mail-function    'smtpmail-send-it
+      smtpmail-smtp-server          "smtp.yandex.ru"
+      smtpmail-smtp-service         465
+      smtpmail-stream-type          'ssl
+      smtpmail-debug-info           t
+      smtpmail-debug-verb           t)
+(setq calendar-date-style       'european
+      calendar-week-start-day   1)
 ;;;      calendar-day-name-array   ["Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
 ;;;      calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" 
 ;;;                                 "Июнь" "Июль" "Август" "Сентябрь"
 ;;;                                 "Октябрь" "Ноябрь" "Декабрь"])
-(setq calendar-week-start-day   1)
 (setq kill-whole-line t)
 (setq line-number-mode t)
 (setq column-number-mode t)
@@ -185,7 +193,7 @@
 (size-indication-mode 1)                ; show size of the current file in the mode line
 (global-font-lock-mode t)
 (show-paren-mode)                       ; hilight corresp. parenthies
-(partial-completion-mode)               ; smart name completetion
+;(partial-completion-mode)               ; smart name completetion
 (bar-cursor-mode 1)                     ; change cursor from bar to block in overwrite mode
 (desktop-save-mode 1)
 (windmove-default-keybindings)
@@ -196,13 +204,40 @@
 (autoload 'rfcview-mode                  "rfcview"    nil                              t)
 ;;
 (add-to-list 'warning-suppress-types '(undo discard-info))
-;;--;;(add-to-list 'tramp-default-proxies-alist
-;;--;;             '("erebor\\.unison\\.local\\'" "\\`root\\'" "/ssh:%h:"))
+;; /sudo:eastfold.aintsys.com:/etc/
+(add-to-list 'tramp-default-proxies-alist 
+             '("\\.aintsys\\.com\\'" "\\`root\\'" "/ssh:%h:"))
+
+;; Erlang includes
+(require 'erlang)
+(defvar erlang-lib-dir (concat erlang-root-dir "/lib"))
+(defvar erlang-libs-names (directory-files erlang-lib-dir))
+
+(defun erlang-lib-versioned-name (libstr)
+  (let* ((parts (split-string libstr "/"))
+         (libname (car parts))
+         (verlibname)
+         (result))
+    (dolist (name erlang-libs-names result)
+      (when (string-match libname name)
+        (setq result (cons name result))))
+    (setq verlibname
+          (cond ((> (length result) 0) (car (nreverse result)))
+                (t libname)))
+    (mapconcat 'identity (cons verlibname (cdr parts)) "/")))
+
+;;(erlang-lib-versioned-name "eunit/include/eunit.hrl")
+;;(erlang-lib-versioned-name "unit/include/eunit.hrl")
+
 (add-to-list 'ff-special-constructs 
-    ;; Erlang includes
     '("^-include(\"\\(.*\\)\"" .
       (lambda ()
         (buffer-substring (match-beginning 1) (match-end 1)))))
+
+(add-to-list 'ff-special-constructs 
+    '("^-include_lib(\"\\(.*\\)\"" .
+      (lambda ()
+        (erlang-lib-versioned-name (buffer-substring (match-beginning 1) (match-end 1))))))
 
 ;;;;
 ;;;; hooks
@@ -215,7 +250,8 @@
                                                                       "../include"
                                                                       "../../*/include"
                                                                       "../src"
-                                                                      "../../*/src")
+                                                                      "../../*/src"
+                                                                      "/usr/lib/erlang/lib")
                                               ff-other-file-alist '(("\\.erl" (".hrl"))
                                                                     ("\\.hrl" (".erl")))
                                               )))
@@ -421,7 +457,7 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key "\C-ci"           'todo-insert-item)     ; insert new item
 (global-set-key "\C-x\C-d"        'dired)
 (global-set-key "\C-cd"           'dictionary-search)
-(global-set-key [?\A-0]           'buffer-menu)  ;    bs-show)
+(global-set-key [?\A-0]           'buffer-menu)          ; bs-show)
 ;(global-set-key [C-A-delete]      'xlock)
 ;(global-set-key [C-A-kp-delete]   'xlock)
 (global-set-key "\C-ch"           'hide-lines)
