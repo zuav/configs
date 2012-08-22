@@ -29,6 +29,7 @@
 (require 'warnings)
 (require 'outline)
 (require 'smtpmail)
+(require 'doc-view)
 ;;
 (require 'bbdb)
 (require 'w3m)
@@ -38,9 +39,8 @@
 (require 'bm)
 (require 'bar-cursor)
 (require 'ssh)
-(require 'doc-view)
-(require 'sh-utils)
 (require 'top-mode)
+;(require 'sh-utils)
 ;(require 'emacsd-tile)
 
 ;;;;
