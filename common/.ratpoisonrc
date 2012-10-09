@@ -9,3 +9,6 @@ set winfmt %x - %f - %n - %a
 escape C-z
 definekey root Tab nextscreen
 definekey root f   focus
+nextscreen
+set font Mono-18
+prevscreen

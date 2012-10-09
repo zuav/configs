@@ -10,28 +10,25 @@
 ;; 
 
 ;;; Code:
-(require 'gnus-demon)
-(require 'smtpmail)
+;(require 'gnus-demon)
+;(require 'imap)
 
-(gnus-demon-add-handler 'gnus-demon-scan-news 30 7)
-
-(setq user-mail-address             "zuav@yandex.ru"
-      send-mail-function            'smtpmail-send-it
-      message-send-mail-function    'smtpmail-send-it
-      smtpmail-smtp-server          "smtp.yandex.ru"
-      smtpmail-auth-credentials     '(("smtp.yandex.ru" 25 "zuav" nil))
-      smtpmail-starttls-credentials '(("smtp.yandex.ru" 465 nil nil))
-      smtpmail-debug-info           t
-      smtpmail-debug-verb           t)
+;(gnus-demon-add-handler 'gnus-demon-scan-news 30 7)
 
 (setq gnus-select-method '(nntp "news.eternal-september.org"))
 
 (setq gnus-secondary-select-methods
-      '((nnimap "yandex"
-                (nnimap-address       "imap.yandex.ru")
-		(nnimap-server-port   993)
-                (nnimap-stream        ssl)
-                (nnimap-authinfo-file "/home/zuav/.authinfo"))))
+      '(;(nnimap "yandex"
+        ;        (nnimap-address "imap.yandex.ru")
+        ;        (nnimap-stream ssl))
+        (nnml   "")
+        (nnimap "gmail"
+                (nnimap-address "imap.gmail.com")
+                (nnimap-stream ssl))))
+
+(setq imap-log t
+      imap-debug t
+      nnimap-debug  t)
 
 (setq gnus-message-archive-group "sent-mail")
 (setq gnus-message-archive-method
@@ -40,9 +37,13 @@
              (nnml-active-file "~/Mail/archive/active")
              (nnml-get-new-mail nil)))
 
-(setq nnimap-split-crosspost nil
-      nnimap-split-inbox     "INBOX"
-      imap-log               nil)
+(setq gnus-visual           t
+      gnus-large-newsgroup  2000
+      gnus-read-active-file 'some)
+
+;;(setq nnimap-split-crosspost nil
+;;      nnimap-split-inbox     nil  ;; "INBOX"
+;;      imap-log               t)
 
 ;;(setq nnimap-split-rule
 ;;      '(("INBOX.cleanvm-trustedarm"   "^Subject: trustedarm.*build on .+")
@@ -53,11 +54,7 @@
 ;;        ("INBOX.cron-daemon"          "^From: .*(Cron Daemon)$")
 ;;        ("INBOX.tasks"                "^From: TeamForge Administrator.*")))
 
-(setq gnus-visual           t
-      gnus-large-newsgroup  2000
-      gnus-read-active-file 'some)
-
- ;; let Gnus change the "From:" line by looking at current group we are in.
+;; let Gnus change the "From:" line by looking at current group we are in.
 ;;(setq gnus-posting-styles
 ;;      '(("erlang-questions" (address "zuav@yandex.ru"))
 ;;        ("ejabberd"         (address "zuav@yandex.ru"))

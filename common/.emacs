@@ -40,7 +40,7 @@
 (require 'bar-cursor)
 (require 'ssh)
 (require 'top-mode)
-;(require 'sh-utils)
+(require 'sh-utils)
 ;(require 'emacsd-tile)
 
 ;;;;
