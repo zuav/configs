@@ -23,6 +23,7 @@ xbindkeys
 # 01.06.2012 -- 31 (99x33)
 # 07.08.2012 -- 30 (105x35)
 # 03.09.2012 -- 29 (111x36)
-emacs -fs -fn "-unknown-Liberation Mono-normal-normal-normal-*-29-*-*-*-m-0-iso10646-1" &
+# 17.10.2012 -- 28 (111x38)
+emacs -fs -fn "-unknown-Liberation Mono-normal-normal-normal-*-28-*-*-*-m-0-iso10646-1" &
 
 exec ratpoison
