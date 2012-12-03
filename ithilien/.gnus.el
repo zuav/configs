@@ -18,13 +18,15 @@
 (setq gnus-select-method '(nntp "news.eternal-september.org"))
 
 (setq gnus-secondary-select-methods
-      '(;(nnimap "yandex"
-        ;        (nnimap-address "imap.yandex.ru")
-        ;        (nnimap-stream ssl))
-        (nnml   "")
-        (nnimap "gmail"
+      '((nnimap "gmail"
                 (nnimap-address "imap.gmail.com")
-                (nnimap-stream ssl))))
+                (nnimap-stream ssl))
+        (nnimap "crystax"
+                (nnimap-address "imap.crystax.net")
+                (nnimap-server-port 46978)
+                (nnimap-stream ssl))
+        (nnml   "")))
+
 
 (setq imap-log t
       imap-debug t
