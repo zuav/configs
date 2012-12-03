@@ -1,0 +1,2 @@
+# adb protocol on Galaxy S III
+SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="6860", MODE="0600", OWNER="<username>"
