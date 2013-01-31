@@ -8,6 +8,14 @@
 ;;;;
 
 (add-to-list 'load-path (expand-file-name "~/src/elisp"))
+(add-to-list 'load-path (expand-file-name "~/src/ack-el"))
+
+;; for 19" monitor:
+;; 11.12.2012 -- 25  83x35
+;; 03.01.2013 -- 24  89x36
+(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
+
 
 ;;;;
 ;;;; Packages I need
@@ -43,11 +51,11 @@
 (require 'sh-utils)
 ;(require 'emacsd-tile)
 
+
 ;;;;
 ;;;; load libraries
 ;;;;
 (load "paren")
-;(load "complete")
 (load "desktop")
 
 ;;;;
@@ -86,11 +94,11 @@
       smtpmail-debug-info           t
       smtpmail-debug-verb           t)
 (setq calendar-date-style       'european
-      calendar-week-start-day   1)
-;;;      calendar-day-name-array   ["Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
-;;;      calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" 
-;;;                                 "Июнь" "Июль" "Август" "Сентябрь"
-;;;                                 "Октябрь" "Ноябрь" "Декабрь"])
+      calendar-week-start-day   1
+      calendar-day-name-array   ["Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
+      calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" 
+                                 "Июнь" "Июль" "Август" "Сентябрь"
+                                 "Октябрь" "Ноябрь" "Декабрь"])
 (setq kill-whole-line t)
 (setq line-number-mode t)
 (setq column-number-mode t)
@@ -124,7 +132,8 @@
       display-time-mail-file     "/var/spool/mail/zuav"
       display-time-use-mail-icon t)
 (setq ediff-diff-options "-w"                       ; ignore changes in whitespace
-      ediff-split-window-function 'split-window-horizontally
+      ;ediff-split-window-function 'split-window-horizontally
+      ediff-split-window-function 'split-window-vertically
       ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq emerge-diff-options "-w")                      ; ignore changes in whitespace
 (setq tramp-default-method "scp")
@@ -150,7 +159,8 @@
       bbdb/news-auto-create-p nil)
 (setq dired-recursive-deletes 'top
       dired-recursive-copies 'top)
-(setq doc-view-cache-directory     "/var/tmp/docview1000")
+(setq doc-view-cache-directory     "/var/tmp/docview1000"
+      doc-view-resolution          400)
 (setq bm-repository-size 10000)
 (setq zuav-fidogate-passwd 499679240)
 (setq c-default-style '((c++-mode . "stroustrup") (other . "stroustrup")))
@@ -159,7 +169,7 @@
       w3m-use-cookies                   t
       w3m-command-arguments             (nconc w3m-command-arguments '("-cookie"))
       w3m-default-display-inline-images t)
-(setq browse-url-browser-function 'w3m-browse-url)
+;(setq browse-url-browser-function 'w3m-browse-url)
 (setq line-number-display-limit-width 2000)
 (setq auto-mode-alist
       (cons '("/\\(rfc\\|std\\)[0-9]+\\.txt\\(\\.gz\\)?\\'" . rfcview-mode)
@@ -171,8 +181,15 @@
       mpg123-lazy-check            "mp3")
 (setq auto-insert-query nil)                     ; autotype, copyright, etc
 (setq inferior-lisp-program "/usr/bin/sbcl")
-(setq jabber-roster-show-title  nil
-      jabber-roster-line-format " %c %-30n %u %-8s  %S")
+(setq jabber-roster-show-title    nil
+      jabber-roster-line-format   " %c %-30n %u %-8s  %S"
+      jabber-roster-show-bindings nil
+      jabber-show-resources       nil
+      jabber-auto-reconnect       t
+      jabber-history-enabled      t
+      jabber-use-global-history   nil
+      jabber-backlog-number       3000
+      jabber-backlog-days         365.0)
 
 ;;-;;(setq inferior-erlang-display-buffer-any-frame t
 ;;-;;      inferior-erlang-machine-options          '("-sname" "emacs"))
@@ -202,6 +219,11 @@
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil                              t)
 (autoload 'hide-lines                    "hide-lines" "Hide lines based on a regexp"   t)
 (autoload 'rfcview-mode                  "rfcview"    nil                              t)
+(autoload 'ack                           "ack"        nil                              t)
+(autoload 'pcomplete/ack                 "pcmpl-ack")
+(autoload 'pcomplete/ack-grep            "pcmpl-ack")
+;;(autoload 'do-not-edit-readonly          "do-not-edit")
+
 ;;
 (add-to-list 'warning-suppress-types '(undo discard-info))
 ;; /sudo:eastfold.aintsys.com:/etc/
@@ -209,23 +231,23 @@
              '("\\.aintsys\\.com\\'" "\\`root\\'" "/ssh:%h:"))
 
 ;; Erlang includes
-(require 'erlang)
-(defvar erlang-lib-dir (concat erlang-root-dir "/lib"))
-(defvar erlang-libs-names (directory-files erlang-lib-dir))
-
-(defun erlang-lib-versioned-name (libstr)
-  (let* ((parts (split-string libstr "/"))
-         (libname (car parts))
-         (verlibname)
-         (result))
-    (dolist (name erlang-libs-names result)
-      (when (string-match libname name)
-        (setq result (cons name result))))
-    (setq verlibname
-          (cond ((> (length result) 0) (car (nreverse result)))
-                (t libname)))
-    (mapconcat 'identity (cons verlibname (cdr parts)) "/")))
-
+;;;(require 'erlang)
+;;;(defvar erlang-lib-dir (concat erlang-root-dir "/lib"))
+;;;(defvar erlang-libs-names (directory-files erlang-lib-dir))
+;;;
+;;;(defun erlang-lib-versioned-name (libstr)
+;;;  (let* ((parts (split-string libstr "/"))
+;;;         (libname (car parts))
+;;;         (verlibname)
+;;;         (result))
+;;;    (dolist (name erlang-libs-names result)
+;;;      (when (string-match libname name)
+;;;        (setq result (cons name result))))
+;;;    (setq verlibname
+;;;          (cond ((> (length result) 0) (car (nreverse result)))
+;;;                (t libname)))
+;;;    (mapconcat 'identity (cons verlibname (cdr parts)) "/")))
+;;;
 ;;(erlang-lib-versioned-name "eunit/include/eunit.hrl")
 ;;(erlang-lib-versioned-name "unit/include/eunit.hrl")
 
@@ -234,28 +256,28 @@
       (lambda ()
         (buffer-substring (match-beginning 1) (match-end 1)))))
 
-(add-to-list 'ff-special-constructs 
-    '("^-include_lib(\"\\(.*\\)\"" .
-      (lambda ()
-        (erlang-lib-versioned-name (buffer-substring (match-beginning 1) (match-end 1))))))
+;;;(add-to-list 'ff-special-constructs 
+;;;    '("^-include_lib(\"\\(.*\\)\"" .
+;;;      (lambda ()
+;;;        (erlang-lib-versioned-name (buffer-substring (match-beginning 1) (match-end 1))))))
 
 ;;;;
 ;;;; hooks
 ;;;;
 ;;;; Erlang mode
-(add-hook 'erlang-mode-hook '(lambda () (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)))
-(add-hook 'erlang-mode-hook '(lambda () (setq show-trailing-whitespace t
-                                              tab-width 4
-                                              ff-search-directories '("."
-                                                                      "../include"
-                                                                      "../../*/include"
-                                                                      "../src"
-                                                                      "../../*/src"
-                                                                      "/usr/lib/erlang/lib")
-                                              ff-other-file-alist '(("\\.erl" (".hrl"))
-                                                                    ("\\.hrl" (".erl")))
-                                              )))
-;;;; Shell mode
+;;;(add-hook 'erlang-mode-hook '(lambda () (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)))
+;;;(add-hook 'erlang-mode-hook '(lambda () (setq show-trailing-whitespace t
+;;;                                              tab-width 4
+;;;                                              ff-search-directories '("."
+;;;                                                                      "../include"
+;;;                                                                      "../../*/include"
+;;;                                                                      "../src"
+;;;                                                                      "../../*/src"
+;;;                                                                      "/usr/lib/erlang/lib")
+;;;                                              ff-other-file-alist '(("\\.erl" (".hrl"))
+;;;                                                                    ("\\.hrl" (".erl")))
+;;;                                              )))
+;;;;;;; Shell mode
 (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
 (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
@@ -307,7 +329,6 @@
                                (setq indent-tabs-mode t)))
 ;;;;
 (add-hook 'todo-mode-hook 'hl-line-mode)
-
 ;;;;
 (add-hook 'dired-mode-hook 'hl-line-mode)
 ;;;;
@@ -316,6 +337,9 @@
 (add-hook 'calendar-load-hook
           (lambda ()
             (calendar-set-date-style 'european)))
+;;;;
+;;(add-hook 'find-file-hooks 'do-not-edit-readonly)
+
 
 
 (defun zuav-find-next-close-curly ()
@@ -371,12 +395,13 @@
        (setq default-frame-alist
              (append '((cursor-type . bar)
                        (background-mode . dark)
-                       (foreground-color . "gray85")
+                       ;(foreground-color . "gray85")
+                       (foreground-color . "white")
                        (background-color . "black")
-                       (cursor-color . "white")
+                       ;(cursor-color . "white")
                        ;(border-width . 1)
                        ;(border-color . "black")
-                       ;(background-color . "white")
+                       ;(background-color . "ivory")
                        )
                      default-frame-alist))))
 ;;;;
@@ -434,6 +459,8 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key [A-f2]            'apt-utils-search)
 (global-set-key [A-f3]            'zuav-kill-buffer)
 (global-set-key [A-tab]           'other-frame)
+;(global-set-key [A-tab]           'next-buffer)
+;(global-set-key [A-S-iso-lefttab] 'previous-buffer)
 (global-set-key [?\A-l]           'zuav-line-to-top-of-window)
 (global-set-key [home]            'beginning-of-line)
 (global-set-key [end]             'end-of-line)
@@ -540,6 +567,8 @@ Replaces three keystroke sequence C-u 0 C-l."
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+(put 'scroll-left 'disabled nil)
+
 
 ;;;;
 ;;;; Insidious Big Brother Database (bbdb)
@@ -552,15 +581,15 @@ Replaces three keystroke sequence C-u 0 C-l."
 (add-hook 'find-file-hooks  'auto-insert)
 (add-hook 'before-save-hook 'copyright-update)
 
-(defun lindon ()
-  "Start lindon virtual machine."
+(defun lorien ()
+  "Start lorien virtual machine."
   (interactive)
-  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "lindon"))
+  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "lorien"))
 
-(defun mordor ()
-  "Start mordor virtual machine."
+(defun tangorodrim ()
+  "Start tangorodrim virtual machine."
   (interactive)
-  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "mordor"))
+  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "tangorodrim"))
 
 (defun harad ()
   "Start harad virtual machine."
@@ -798,20 +827,19 @@ maybe accessed via the corresponding tramp method."
 
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(canlock-password "b600beba9651f7c871f347668e74849f7fc7b8fb")
- '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)) ("a_zhukov@im" (:connection-type . network)))))
+ '(column-number-mode t)
+ '(display-time-mode t)
+ '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)))))
  '(jabber-alert-message-hooks (quote (jabber-message-scroll)))
- '(jabber-alert-presence-hooks nil))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- )
+ '(jabber-alert-presence-hooks nil)
+ '(show-paren-mode t)
+ '(size-indication-mode t)
+ '(tool-bar-mode nil))
 
 
 ;;;;
