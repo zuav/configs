@@ -13,8 +13,8 @@
 ;; for 19" monitor:
 ;; 11.12.2012 -- 25  83x35
 ;; 03.01.2013 -- 24  89x36
-(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
+;; 01.02.2013 -- 23  89x37
+(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-23-*-*-*-m-0-iso10646-1")
 
 
 ;;;;
@@ -228,7 +228,7 @@
 (add-to-list 'warning-suppress-types '(undo discard-info))
 ;; /sudo:eastfold.aintsys.com:/etc/
 (add-to-list 'tramp-default-proxies-alist 
-             '("\\.aintsys\\.com\\'" "\\`root\\'" "/ssh:%h:"))
+             '("\\lorien\\'" "\\`root\\'" "/ssh:%h:"))
 
 ;; Erlang includes
 ;;;(require 'erlang)
