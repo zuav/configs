@@ -7,7 +7,7 @@ ulimit -c unlimited
 eval $(gnome-keyring-daemon --start)
 
 xscreensaver &
-udisks-glue
+#udisks-glue
 
 xset r rate 250 50
 xsetroot -solid black 
