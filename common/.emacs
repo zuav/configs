@@ -14,7 +14,8 @@
 ;; 11.12.2012 -- 25  83x35
 ;; 03.01.2013 -- 24  89x36
 ;; 01.02.2013 -- 23  89x37
-(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-23-*-*-*-m-0-iso10646-1")
+;; 01.03.2012 -- 22  96x39
+(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
 
 
 ;;;;
@@ -160,7 +161,7 @@
 (setq dired-recursive-deletes 'top
       dired-recursive-copies 'top)
 (setq doc-view-cache-directory     "/var/tmp/docview1000"
-      doc-view-resolution          400)
+      doc-view-resolution          800)
 (setq bm-repository-size 10000)
 (setq zuav-fidogate-passwd 499679240)
 (setq c-default-style '((c++-mode . "stroustrup") (other . "stroustrup")))
