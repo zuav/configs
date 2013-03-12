@@ -1,6 +1,6 @@
 ;;; .gnus.el --- Gnus
 
-;; Copyright (C) 2006, 2007, 2009, 2010, 2011, 2012  Alexander Zhukov
+;; Copyright (C) 2006, 2007, 2009, 2010, 2011, 2012, 2013  Alexander Zhukov
 
 ;; Author: Alexander Zhukov
 ;; Keywords: extensions
@@ -21,16 +21,19 @@
       '((nnimap "gmail"
                 (nnimap-address "imap.gmail.com")
                 (nnimap-stream ssl))
+        ;(nnimap "yandex"
+        ;        (nnimap-address "imap.yandex.ru")
+        ;        (nnimap-stream ssl))
         (nnimap "crystax"
                 (nnimap-address "imap.crystax.net")
-                (nnimap-server-port 46978)
-                (nnimap-stream ssl))
+                (nnimap-server-port 143)
+                (nnimap-stream starttls))
         (nnml   "")))
 
 
-(setq imap-log t
-      imap-debug t
-      nnimap-debug  t)
+(setq imap-log     nil
+      imap-debug   nil
+      nnimap-debug nil)
 
 (setq gnus-message-archive-group "sent-mail")
 (setq gnus-message-archive-method
