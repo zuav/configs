@@ -14,8 +14,8 @@ xsetroot -solid black
 setxkbmap -layout 'us,ru' -option 'grp:alt_shift_toggle,grp_led:scroll'
 xbindkeys
 
-google-chrome &
 emacs -fs &
+google-chrome &
 
 
 exec ratpoison
