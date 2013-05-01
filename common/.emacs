@@ -7,16 +7,29 @@
 ;;;; created somewhere in Jan, 1996 or even early
 ;;;;
 
+(add-to-list 'load-path (expand-file-name "/opt/erlang/R16B/lib/erlang/lib/tools-2.6.10/emacs"))
 (add-to-list 'load-path (expand-file-name "~/src/elisp"))
 (add-to-list 'load-path (expand-file-name "~/src/ack-el"))
 
-;; for 19" monitor:
-;; 11.12.2012 -- 25  83x35
-;; 03.01.2013 -- 24  89x36
-;; 01.02.2013 -- 23  89x37
-;; 01.03.2012 -- 22  96x39
-(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
+(setq erlang-root-dir "/otp/erlang/R16B")
 
+;;
+;;(frame-width  (selected-frame))
+;;(frame-height (selected-frame))
+;;
+;; for 19" monitor:
+;;   11.12.2012 -- 25  83x35
+;;   03.01.2013 -- 24  89x36
+;;   01.02.2013 -- 23  89x37
+;;   01.03.2012 -- 22  96x39
+;;   03.04.2012 -- 21  96x40
+;;   01.05.2012 -- 22  104x42
+(set-default-font "-unknown-Droid Sans Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-inconsolata-normal-normal-normal-*-25-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-Anonymous Pro-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-DejaVu Sans Mono-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
+;(set-default-font "-monotype-Courier New-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
 
 ;;;;
 ;;;; Packages I need
@@ -44,12 +57,15 @@
 (require 'w3m)
 (require 'jabber)
 ;;
+(require 'erlang-start)
+;;
 (require 'psed)
 (require 'bm)
 (require 'bar-cursor)
 (require 'ssh)
 (require 'top-mode)
 (require 'sh-utils)
+;;
 ;(require 'emacsd-tile)
 
 
@@ -85,7 +101,8 @@
 (setq case-fold-file-names nil)
 (setq compile-command "make ")
 (setq compilation-scroll-output t)
-(setq dired-chown-program "/bin/chown")
+(setq dired-chown-program      "/bin/chown"
+      dired-auto-revert-buffer t)
 (setq user-mail-address             "zuav@yandex.ru"
       send-mail-function            'smtpmail-send-it
       message-send-mail-function    'smtpmail-send-it
@@ -161,7 +178,7 @@
 (setq dired-recursive-deletes 'top
       dired-recursive-copies 'top)
 (setq doc-view-cache-directory     "/var/tmp/docview1000"
-      doc-view-resolution          800)
+      doc-view-resolution          400)
 (setq bm-repository-size 10000)
 (setq zuav-fidogate-passwd 499679240)
 (setq c-default-style '((c++-mode . "stroustrup") (other . "stroustrup")))
@@ -200,7 +217,7 @@
 ;;;;
 (auto-image-file-mode 1)                ; turn on viewing files as images
 (delete-selection-mode 1)               ; yank replaces selected region
-(menu-bar-mode '-1)                     ; no menu. I hate it.
+(menu-bar-mode '-1)                     ; no menu. I hate it. But let it be on Unity.
 (tool-bar-mode '-1)                     ; no toolbar. I hate it too.
 (scroll-bar-mode '-1)	                ; no scroll-bar. I hate it too
 (auto-compression-mode 1)               ; turn on autodecompression of gz etc
@@ -317,12 +334,15 @@
                                                   (inexpr-class-close before)
                                                   (namespace-open after)
                                                   (class-open after)
-                                                  (inline-open)
-                                                  (inline-close)))))
+                                                  (inline-open 0)
+                                                  (inline-close 0)))))
 (add-hook 'c-mode-common-hook '(lambda () (setq show-trailing-whitespace nil)))
 (add-hook 'c-mode-common-hook '(lambda () (hs-minor-mode 1)))
 (add-hook 'c-mode-common-hook '(lambda () (setq indent-tabs-mode nil
                                                 tab-width 4)))
+;;;; Java mode 
+(add-hook 'java-mode-hook '(lambda ()
+                             (c-set-offset 'inline-open 0)))
 ;;;;
 (add-hook 'python-mode-hook '(lambda ()
                                (setq show-trailing-whitespace t)
@@ -395,10 +415,10 @@
 (cond (window-system
        (setq default-frame-alist
              (append '((cursor-type . bar)
-                       (background-mode . dark)
+                       ;(background-mode . dark)
                        ;(foreground-color . "gray85")
-                       (foreground-color . "white")
-                       (background-color . "black")
+                       ;(foreground-color . "white")
+                       ;(background-color . "black")
                        ;(cursor-color . "white")
                        ;(border-width . 1)
                        ;(border-color . "black")
@@ -427,6 +447,10 @@ Replaces three keystroke sequence C-u 0 C-l."
   (interactive)
   (switch-to-buffer (other-buffer)))
 
+(defun zuav-open-todo ()
+  (interactive)
+  (find-file (expand-file-name "~/lib/personal/todo.org")))
+
 
 ;;;;
 ;;;; Global keybindings
@@ -442,8 +466,8 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key [XF86Mail]        'gnus)
 (global-set-key [f1]              'bm-next)
 (global-set-key [f2]              'switch-to-other-buffer)
-(global-set-key [f3]              'todo-show)            ; switch to TODO buffer
-(global-set-key [f4]              'svn-examine)
+(global-set-key [f3]              'zuav-open-todo)
+(global-set-key [f4]              'magit-status)   ; svn-examine
 (global-set-key [f5]              'w3m)
 (global-set-key [f6]              'other-window)
 (global-set-key [f7]              'psed)
@@ -502,7 +526,7 @@ Replaces three keystroke sequence C-u 0 C-l."
 (define-key c++-mode-map [?\A-\]]  'zuav-find-next-close-curly)
 (define-key c++-mode-map [?\A-\[]  'zuav-find-prev-open-curly)
 (define-key c++-mode-map [kp-add]  'hs-toggle-hiding)
-(define-key c-mode-map [kp-add]  'hs-toggle-hiding)
+(define-key c-mode-map   [kp-add]  'hs-toggle-hiding)
 ;;
 (define-key outline-mode-map [C--] 'hide-subtree)
 (define-key outline-mode-map [C-=] 'show-entry)
@@ -581,6 +605,7 @@ Replaces three keystroke sequence C-u 0 C-l."
 ;;;;
 (add-hook 'find-file-hooks  'auto-insert)
 (add-hook 'before-save-hook 'copyright-update)
+;(remove-hook 'before-save-hook 'copyright-update)
 
 (defun lorien ()
   "Start lorien virtual machine."
@@ -832,6 +857,7 @@ maybe accessed via the corresponding tramp method."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auth-source-save-behavior nil)
  '(canlock-password "b600beba9651f7c871f347668e74849f7fc7b8fb")
  '(column-number-mode t)
  '(display-time-mode t)
@@ -861,3 +887,9 @@ maybe accessed via the corresponding tramp method."
 (server-start)
 
 ;;;; .emacs ends 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
