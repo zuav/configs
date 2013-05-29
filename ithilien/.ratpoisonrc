@@ -6,16 +6,19 @@ set font Mono-19
 set winfmt %x - %f - %n - %a
 escape C-z
 alias android       exec android
+alias armeabi       exec emulator -avd armeabi -no-window
+alias armeabi-w     exec emulator -avd armeabi
 alias avd           exec android avd
 alias calibre       exec calibre
-alias durthang      exec virtualbox --startvm durthang
+alias durthang      exec VirtualBox --startvm durthang
 alias emacs         exec emacs -fs
-alias erebor        exec virtualbox --startvm erebor
+alias erebor        exec VirtualBox --startvm erebor
 alias evince        exec evince
 alias google-chrome exec google-chrome
 alias kpat          exec kpat
-alias lorien        exec virtualbox --startvm lorien
-alias mirkwood      exec virtualbox --startvm mirkwood
-alias skype         exec skype-13.04-fix.sh
+alias lorien        exec VirtualBox --startvm lorien
+alias mirkwood      exec VirtualBox --startvm mirkwood
+alias skype         exec skype
 alias steam         exec steam
-alias tangorodrim   exec virtualbox --startvm tangorodrim
+alias tangorodrim   exec VirtualBox --startvm tangorodrim
+alias vmplayer      exec vmplayer
