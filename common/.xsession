@@ -4,7 +4,7 @@
 
 ulimit -c unlimited
 
-eval $(gnome-keyring-daemon --start)
+#eval $(gnome-keyring-daemon --start)
 
 xscreensaver &
 #udisks-glue
