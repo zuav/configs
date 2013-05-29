@@ -7,11 +7,11 @@
 ;;;; created somewhere in Jan, 1996 or even early
 ;;;;
 
-(add-to-list 'load-path (expand-file-name "/opt/erlang/R16B/lib/erlang/lib/tools-2.6.10/emacs"))
+;(add-to-list 'load-path (expand-file-name "/opt/erlang/R16B/lib/erlang/lib/tools-2.6.10/emacs"))
 (add-to-list 'load-path (expand-file-name "~/src/elisp"))
 (add-to-list 'load-path (expand-file-name "~/src/ack-el"))
 
-(setq erlang-root-dir "/otp/erlang/R16B")
+;(setq erlang-root-dir "/otp/erlang/R16B")
 
 ;;
 ;;(frame-width  (selected-frame))
@@ -23,12 +23,12 @@
 ;;   01.02.2013 -- 23  89x37
 ;;   01.03.2012 -- 22  96x39
 ;;   03.04.2012 -- 21  96x40
-;;   01.05.2012 -- 22  104x42
-(set-default-font "-unknown-Droid Sans Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-inconsolata-normal-normal-normal-*-25-*-*-*-m-0-iso10646-1")
+;;   01.05.2012 -- 22  104x42 (Droid), 104x44 (Liberation)
+;(set-default-font "-unknown-Droid Sans Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1")
+(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-inconsolata-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
 ;(set-default-font "-unknown-Anonymous Pro-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-DejaVu Sans Mono-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-DejaVu Sans Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1")
 ;(set-default-font "-monotype-Courier New-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
 
 ;;;;
@@ -103,12 +103,12 @@
 (setq compilation-scroll-output t)
 (setq dired-chown-program      "/bin/chown"
       dired-auto-revert-buffer t)
-(setq user-mail-address             "zuav@yandex.ru"
+(setq user-mail-address             "zuav@crystax.net"
       send-mail-function            'smtpmail-send-it
       message-send-mail-function    'smtpmail-send-it
-      smtpmail-smtp-server          "smtp.yandex.ru"
-      smtpmail-smtp-service         465
-      smtpmail-stream-type          'ssl
+      smtpmail-smtp-server          "smtp.crystax.net"
+      smtpmail-smtp-service         587
+      smtpmail-stream-type          'starttls
       smtpmail-debug-info           t
       smtpmail-debug-verb           t)
 (setq calendar-date-style       'european
@@ -178,7 +178,7 @@
 (setq dired-recursive-deletes 'top
       dired-recursive-copies 'top)
 (setq doc-view-cache-directory     "/var/tmp/docview1000"
-      doc-view-resolution          400)
+      doc-view-resolution          1000)
 (setq bm-repository-size 10000)
 (setq zuav-fidogate-passwd 499679240)
 (setq c-default-style '((c++-mode . "stroustrup") (other . "stroustrup")))
