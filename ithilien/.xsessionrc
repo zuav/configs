@@ -4,9 +4,13 @@ LC_COLLATE=C
 
 GIT_PAGER=""
 EDITOR=emacsclient
-EMAIL="zuav@yandex.ru"
-ANDROID_SDK=/opt/android/android-sdk-linux
-MINGW_W64=/home/zuav/src/ndk/platform/prebuilts/gcc/linux-x86/host/i686-w64-mingw32/bin
-PATH=$MINGW_W64:/home/zuav/bin:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$PATH
+EMAIL="zuav@crystax.net"
 
-export LC_COLLATE GIT_PAGER EDITOR EMAIL PATH
+ANDROID_SDK=/opt/android/android-sdk-linux
+
+JAVA_HOME=/opt/java/jdk1.7.0_21
+JDK_HOME=/opt/java/jdk1.7.0_21
+
+PATH=$ERL_BIN:/home/zuav/bin:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$JAVA_HOME/bin:$PATH
+
+export LC_COLLATE GIT_PAGER EDITOR EMAIL PATH JAVA_HOME JDK_HOME
