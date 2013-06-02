@@ -24,12 +24,12 @@
 ;;   01.03.2012 -- 22  96x39
 ;;   03.04.2012 -- 21  96x40
 ;;   01.05.2012 -- 22  104x42 (Droid), 104x44 (Liberation)
-;(set-default-font "-unknown-Droid Sans Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1")
-(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-inconsolata-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-Anonymous Pro-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-DejaVu Sans Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1")
-;(set-default-font "-monotype-Courier New-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-Droid Sans Mono-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
+(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-inconsolata-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-Anonymous Pro-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-DejaVu Sans Mono-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
+;(set-default-font "-monotype-Courier New-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
 
 ;;;;
 ;;;; Packages I need
