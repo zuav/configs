@@ -14,6 +14,7 @@ alias durthang      exec VirtualBox --startvm durthang
 alias emacs         exec emacs -fs
 alias erebor        exec VirtualBox --startvm erebor
 alias evince        exec evince
+alias firefox       exec firefox
 alias google-chrome exec google-chrome
 alias kpat          exec kpat
 alias lorien        exec VirtualBox --startvm lorien

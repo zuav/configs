@@ -7,10 +7,11 @@ EDITOR=emacsclient
 EMAIL="zuav@crystax.net"
 
 ANDROID_SDK=/opt/android/android-sdk-linux
+ANDROID_HOME=$ANDROID_SDK
 
 JAVA_HOME=/opt/java/jdk1.7.0_21
 JDK_HOME=/opt/java/jdk1.7.0_21
 
 PATH=$ERL_BIN:/home/zuav/bin:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$JAVA_HOME/bin:$PATH
 
-export LC_COLLATE GIT_PAGER EDITOR EMAIL PATH JAVA_HOME JDK_HOME
+export LC_COLLATE GIT_PAGER EDITOR EMAIL PATH JAVA_HOME JDK_HOME export ANDROID_HOME
