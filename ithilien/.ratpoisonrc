@@ -2,7 +2,7 @@ defwinliststyle column
 defwingravity   center
 set padding 0 0 0 0
 set border 0
-set font Mono-19
+set font Mono-17
 set winfmt %x - %f - %n - %a
 escape C-z
 alias android       exec android
@@ -19,6 +19,7 @@ alias google-chrome exec google-chrome
 alias kpat          exec kpat
 alias lorien        exec VirtualBox --startvm lorien
 alias mirkwood      exec VirtualBox --startvm mirkwood
+alias qpdfview      exec qpdfview
 alias skype         exec skype
 alias steam         exec steam
 alias tangorodrim   exec VirtualBox --startvm tangorodrim

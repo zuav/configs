@@ -10,6 +10,7 @@
 ;(add-to-list 'load-path (expand-file-name "/opt/erlang/R16B/lib/erlang/lib/tools-2.6.10/emacs"))
 (add-to-list 'load-path (expand-file-name "~/src/elisp"))
 (add-to-list 'load-path (expand-file-name "~/src/ack-el"))
+(add-to-list 'load-path "/usr/local/share/gtags")
 
 ;(setq erlang-root-dir "/otp/erlang/R16B")
 
@@ -24,9 +25,14 @@
 ;;   01.03.2012 -- 22  96x39
 ;;   03.04.2012 -- 21  96x40
 ;;   01.05.2012 -- 22  104x42 (Droid), 104x44 (Liberation)
-;(set-default-font "-unknown-Droid Sans Mono-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
-(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-inconsolata-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
+;;   01.06.2012 -- 19  104x42 (Droid), 108x45 (Liberation)
+;;   02.07.2012 -- 18  104x42 (Droid), 108x47 (Liberation)
+;;   02.07.2012 -- 18         (Droid), 128x48 (Liberation)
+;;   06.08.2012 -- 17         (Droid), 140x48 (Liberation)
+;;;;;;(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-Droid Sans Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-Roboto-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
+;(set-default-font "-unknown-inconsolata-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
 ;(set-default-font "-unknown-Anonymous Pro-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
 ;(set-default-font "-unknown-DejaVu Sans Mono-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
 ;(set-default-font "-monotype-Courier New-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
@@ -52,12 +58,16 @@
 (require 'outline)
 (require 'smtpmail)
 (require 'doc-view)
+(require 'speedbar)
 ;;
 (require 'bbdb)
 (require 'w3m)
 (require 'jabber)
+(require 'git-blame)
+;(require 'magit-blame)
 ;;
-(require 'erlang-start)
+;(require 'erlang-start)
+(require 'gtags)
 ;;
 (require 'psed)
 (require 'bm)
@@ -150,7 +160,6 @@
       display-time-mail-file     "/var/spool/mail/zuav"
       display-time-use-mail-icon t)
 (setq ediff-diff-options "-w"                       ; ignore changes in whitespace
-      ;ediff-split-window-function 'split-window-horizontally
       ediff-split-window-function 'split-window-vertically
       ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq emerge-diff-options "-w")                      ; ignore changes in whitespace
@@ -206,7 +215,7 @@
       jabber-auto-reconnect       t
       jabber-history-enabled      t
       jabber-use-global-history   nil
-      jabber-backlog-number       3000
+      jabber-backlog-number       1000
       jabber-backlog-days         365.0)
 
 ;;-;;(setq inferior-erlang-display-buffer-any-frame t
@@ -217,7 +226,7 @@
 ;;;;
 (auto-image-file-mode 1)                ; turn on viewing files as images
 (delete-selection-mode 1)               ; yank replaces selected region
-(menu-bar-mode '-1)                     ; no menu. I hate it. But let it be on Unity.
+(menu-bar-mode '-1)                     ; no menu. I hate it.
 (tool-bar-mode '-1)                     ; no toolbar. I hate it too.
 (scroll-bar-mode '-1)	                ; no scroll-bar. I hate it too
 (auto-compression-mode 1)               ; turn on autodecompression of gz etc
@@ -228,11 +237,9 @@
 (size-indication-mode 1)                ; show size of the current file in the mode line
 (global-font-lock-mode t)
 (show-paren-mode)                       ; hilight corresp. parenthies
-;(partial-completion-mode)               ; smart name completetion
 (bar-cursor-mode 1)                     ; change cursor from bar to block in overwrite mode
 (desktop-save-mode 1)
 (windmove-default-keybindings)
-;;(semantic-mode nil)			; todo: 
 
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil                              t)
 (autoload 'hide-lines                    "hide-lines" "Hide lines based on a regexp"   t)
@@ -240,6 +247,7 @@
 (autoload 'ack                           "ack"        nil                              t)
 (autoload 'pcomplete/ack                 "pcmpl-ack")
 (autoload 'pcomplete/ack-grep            "pcmpl-ack")
+(autoload 'gtags-mode                    "gtags" "" t)
 ;;(autoload 'do-not-edit-readonly          "do-not-edit")
 
 ;;
@@ -282,6 +290,15 @@
 ;;;;
 ;;;; hooks
 ;;;;
+(add-hook 'gtags-mode-hook
+  '(lambda ()
+     (define-key gtags-mode-map (concat gtags-prefix-key "P") 'gtags-find-file)
+     (define-key gtags-mode-map (concat gtags-prefix-key "f") 'gtags-parse-file)
+     (define-key gtags-mode-map (concat gtags-prefix-key "s") 'gtags-find-symbol)
+     (define-key gtags-mode-map (concat gtags-prefix-key "r") 'gtags-find-rtag)
+     (define-key gtags-mode-map (concat gtags-prefix-key "t") 'gtags-pop-stack)
+     (define-key gtags-mode-map (concat gtags-prefix-key "v") 'gtags-visit-rootdir)
+     (define-key gtags-mode-map [?\M-.]                       'gtags-find-tag)))
 ;;;; Erlang mode
 ;;;(add-hook 'erlang-mode-hook '(lambda () (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)))
 ;;;(add-hook 'erlang-mode-hook '(lambda () (setq show-trailing-whitespace t
@@ -317,12 +334,14 @@
                             (local-unset-key [right])))
 ;;;; jabber client
 (add-hook 'jabber-post-connect-hooks 'jabber-autoaway-start)
+(add-hook 'jabber-alert-message-hooks 'ratpoison) 
 ;;;; CC mode
 (add-hook 'c-mode-common-hook '(lambda () (add-hook 'local-write-file-hooks
                                                     'delete-trailing-whitespace)))
 (add-hook 'c-mode-common-hook '(lambda () (setq c-comment-only-line-offset '(0 . 0))))
 (add-hook 'c-mode-common-hook '(lambda () (c-toggle-auto-state -1)))
-(add-hook 'c-mode-common-hook '(lambda () (setq comment-column '72)))
+(add-hook 'c-mode-common-hook '(lambda () (setq comment-column      '64
+                                                comment-fill-column '139)))
 (add-hook 'c-mode-common-hook '(lambda () (setq c-hanging-braces-alist
                                                 '((brace-list-open)
                                                   (brace-entry-open)
@@ -340,6 +359,7 @@
 (add-hook 'c-mode-common-hook '(lambda () (hs-minor-mode 1)))
 (add-hook 'c-mode-common-hook '(lambda () (setq indent-tabs-mode nil
                                                 tab-width 4)))
+(add-hook 'c-mode-common-hook '(lambda () (gtags-mode 1)))
 ;;;; Java mode 
 (add-hook 'java-mode-hook '(lambda ()
                              (c-set-offset 'inline-open 0)))
@@ -360,6 +380,9 @@
             (calendar-set-date-style 'european)))
 ;;;;
 ;;(add-hook 'find-file-hooks 'do-not-edit-readonly)
+;;;;
+(add-hook 'grep-mode-hook 'hl-line-mode)
+(add-hook 'Buffer-menu-mode-hook 'hl-line-mode)
 
 
 
@@ -412,19 +435,19 @@
 ;;;;
 ;;;; default frame parameters
 ;;;;
-(cond (window-system
-       (setq default-frame-alist
-             (append '((cursor-type . bar)
-                       ;(background-mode . dark)
-                       ;(foreground-color . "gray85")
-                       ;(foreground-color . "white")
-                       ;(background-color . "black")
-                       ;(cursor-color . "white")
-                       ;(border-width . 1)
-                       ;(border-color . "black")
-                       ;(background-color . "ivory")
-                       )
-                     default-frame-alist))))
+;; (pp (frame-parameters))
+;; (pp (frame-parameters (car (frame-list))))
+;;;; todo: check for window system?
+(add-to-list 'default-frame-alist '(cursor-type . bar))
+(add-to-list 'default-frame-alist '(fullscreen . fullheight))
+(add-to-list 'default-frame-alist '(font . "-unknown-Liberation Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1"))
+(add-to-list 'initial-frame-alist '(width . 141))
+(add-to-list 'initial-frame-alist '(top . 24))
+(add-to-list 'initial-frame-alist '(left . 478))
+(add-to-list 'speedbar-frame-parameters '(width . 40))
+(add-to-list 'speedbar-frame-parameters '(top . 24))
+(add-to-list 'speedbar-frame-parameters '(left . 58))
+(add-to-list 'speedbar-frame-parameters '(fullscreen . fullheight))
 ;;;;
 ;;;;
 ;;;;
@@ -467,7 +490,7 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key [f1]              'bm-next)
 (global-set-key [f2]              'switch-to-other-buffer)
 (global-set-key [f3]              'zuav-open-todo)
-(global-set-key [f4]              'magit-status)   ; svn-examine
+(global-set-key [f4]              'magit-status)
 (global-set-key [f5]              'w3m)
 (global-set-key [f6]              'other-window)
 (global-set-key [f7]              'psed)
@@ -483,9 +506,6 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key [A-f1]            'bm-toggle)
 (global-set-key [A-f2]            'apt-utils-search)
 (global-set-key [A-f3]            'zuav-kill-buffer)
-(global-set-key [A-tab]           'other-frame)
-;(global-set-key [A-tab]           'next-buffer)
-;(global-set-key [A-S-iso-lefttab] 'previous-buffer)
 (global-set-key [?\A-l]           'zuav-line-to-top-of-window)
 (global-set-key [home]            'beginning-of-line)
 (global-set-key [end]             'end-of-line)
@@ -510,30 +530,53 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-set-key "\C-x\C-d"        'dired)
 (global-set-key "\C-cd"           'dictionary-search)
 (global-set-key [?\A-0]           'buffer-menu)          ; bs-show)
-;(global-set-key [C-A-delete]      'xlock)
-;(global-set-key [C-A-kp-delete]   'xlock)
 (global-set-key "\C-ch"           'hide-lines)
 (global-set-key "\C-x\C-\\"       'goto-last-change)
 (global-set-key (kbd "C-c g")     'google-word-at-point)
+(global-set-key [C-tab]           'speedbar-get-focus)
+
 ;;;;
 ;;;; Modes specific keybindings
 ;;;;
 (define-key c-mode-map [C-prior] 'c-beginning-of-defun)
 (define-key c-mode-map [C-next]  'c-end-of-defun)
-;;
-(define-key c++-mode-map [C-prior] 'c-beginning-of-defun)
-(define-key c++-mode-map [C-next]  'c-end-of-defun)
-(define-key c++-mode-map [?\A-\]]  'zuav-find-next-close-curly)
-(define-key c++-mode-map [?\A-\[]  'zuav-find-prev-open-curly)
-(define-key c++-mode-map [kp-add]  'hs-toggle-hiding)
-(define-key c-mode-map   [kp-add]  'hs-toggle-hiding)
-;;
+;;;
+(define-key c++-mode-map  [C-prior] 'c-beginning-of-defun)
+(define-key c++-mode-map  [C-next]  'c-end-of-defun)
+(define-key c++-mode-map  [?\A-\]]  'zuav-find-next-close-curly)
+(define-key c++-mode-map  [?\A-\[]  'zuav-find-prev-open-curly)
+(define-key c++-mode-map  [kp-add]  'hs-toggle-hiding)
+(define-key c-mode-map    [kp-add]  'hs-toggle-hiding)
+(define-key objc-mode-map [kp-add]  'hs-toggle-hiding)
+(define-key java-mode-map [kp-add]  'hs-toggle-hiding)
+;;;
 (define-key outline-mode-map [C--] 'hide-subtree)
 (define-key outline-mode-map [C-=] 'show-entry)
-;;
+;;;
 (define-key w3m-mode-map [A-left]  'w3m-previous-buffer)
 (define-key w3m-mode-map [A-right] 'w3m-next-buffer)
+;;;
+;;(define-key gtags-mode-map (concat gtags-prefix-key "h") 'gtags-display-browser)
+;;(define-key gtags-mode-map "\C-]" 'gtags-find-tag-from-here)
+;;(define-key gtags-mode-map "\C-t" 'gtags-pop-stack)
+;;(define-key gtags-mode-map (concat gtags-prefix-key "d") 'gtags-find-tag)
+;-;(define-key gtags-mode-map (concat gtags-prefix-key "P") 'gtags-find-file)
+;-;(define-key gtags-mode-map (concat gtags-prefix-key "f") 'gtags-parse-file)
+;-;(define-key gtags-mode-map (concat gtags-prefix-key "g") 'gtags-find-with-grep)
+;-;(define-key gtags-mode-map (concat gtags-prefix-key "I") 'gtags-find-with-idutils)
+;-;(define-key gtags-mode-map (concat gtags-prefix-key "s") 'gtags-find-symbol)
+;-;(define-key gtags-mode-map (concat gtags-prefix-key "r") 'gtags-find-rtag)
+;-;(define-key gtags-mode-map (concat gtags-prefix-key "t") 'gtags-pop-stack)
+;-;(define-key gtags-mode-map (concat gtags-prefix-key "v") 'gtags-visit-rootdir)
+;-;(define-key gtags-mode-map [M-.]                         'gtags-find-tag)
 
+
+;;> (global-set-key (kbd "C-j") 'jump-to-register)
+;;> 
+;;> (set-register ?a (cons 'file "/sudo::/etc/apt/sources.list"))
+;;> (set-register ?c (cons 'file "~/.irssi/config"))
+;;> (set-register ?C (cons 'file "/sudo::/etc/default/console-setup"))
+;;> (set-register ?e (cons 'file "~/.emacs"))
 
 
 ;; to correctly set X-Reply-To for fido messages
@@ -606,6 +649,11 @@ Replaces three keystroke sequence C-u 0 C-l."
 (add-hook 'find-file-hooks  'auto-insert)
 (add-hook 'before-save-hook 'copyright-update)
 ;(remove-hook 'before-save-hook 'copyright-update)
+
+(defun truecrypt ()
+  "Start truecrypt program."
+  (interactive)
+  (call-process "/opt/truecrypt/7.1a/usr/bin/truecrypt" nil 0 nil))
 
 (defun lorien ()
   "Start lorien virtual machine."
@@ -893,3 +941,5 @@ maybe accessed via the corresponding tramp method."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(speedbar)
