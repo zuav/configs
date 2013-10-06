@@ -1,35 +1,14 @@
 ;;; .gnus.el --- Gnus
 
-;; Copyright (C) 2006, 2007, 2009, 2010, 2011, 2012, 2013  Alexander Zhukov
-
-;; Author: Alexander Zhukov
-;; Keywords: extensions
-
-;;; Commentary:
-
-;; 
-
 ;;; Code:
-;(require 'gnus-demon)
-;(require 'imap)
-
-;(gnus-demon-add-handler 'gnus-demon-scan-news 30 7)
-
 (setq gnus-select-method '(nntp "news.eternal-september.org"))
 
 (setq gnus-secondary-select-methods
-      '((nnimap "gmail"
-                (nnimap-address "imap.gmail.com")
-                (nnimap-stream ssl))
-        ;(nnimap "yandex"
-        ;        (nnimap-address "imap.yandex.ru")
-        ;        (nnimap-stream ssl))
-        (nnimap "crystax"
+      '((nnimap "crystax"
                 (nnimap-address "imap.crystax.net")
                 (nnimap-server-port 143)
                 (nnimap-stream starttls))
         (nnml   "")))
-
 
 (setq imap-log     nil
       imap-debug   nil
@@ -45,25 +24,5 @@
 (setq gnus-visual           t
       gnus-large-newsgroup  2000
       gnus-read-active-file 'some)
-
-;;(setq nnimap-split-crosspost nil
-;;      nnimap-split-inbox     nil  ;; "INBOX"
-;;      imap-log               t)
-
-;;(setq nnimap-split-rule
-;;      '(("INBOX.cleanvm-trustedarm"   "^Subject: trustedarm.*build on .+")
-;;        ("INBOX.cleanvm-apkr10"       "^Subject: apkr10.*build on .+")
-;;        ("INBOX.cleanvm-bereg"        "^Subject: bereg.*build on .+")
-;;        ("INBOX.cleanvm-seosvt"       "^Subject: seosvt.*build on .+")
-;;        ("INBOX.cleanvm"              "^From: CleanVM bot .*")
-;;        ("INBOX.cron-daemon"          "^From: .*(Cron Daemon)$")
-;;        ("INBOX.tasks"                "^From: TeamForge Administrator.*")))
-
-;; let Gnus change the "From:" line by looking at current group we are in.
-;;(setq gnus-posting-styles
-;;      '(("erlang-questions" (address "zuav@yandex.ru"))
-;;        ("ejabberd"         (address "zuav@yandex.ru"))
-;;        ("debian-announce"  (address "zuav@yandex.ru"))
-;;        ("debian-russian"   (address "zuav@yandex.ru"))))
 
 ;;; .gnus.el ends here
