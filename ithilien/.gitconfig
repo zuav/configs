@@ -10,3 +10,5 @@
 
 [merge]
         renamelimit = 2200
+[fetch]
+	recursesubmodules = true
