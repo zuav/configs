@@ -1,22 +1,23 @@
 ;;;;
 ;;;; Emacs configuration file
-;;;; by
+;;;;
 ;;;; Alexander Zhukov
 ;;;;
 ;;;; 11.03.1996 -- but I think it was really
 ;;;; created somewhere in Jan, 1996 or even early
 ;;;;
 
-(setq Info-directory-list '("/usr/local/share/info" "/usr/local/share/info/emacs"))
+(setq Info-directory-list '("/usr/local/share/info" "/usr/local/share/info/emacs" "/Users/zuav/lib/share/info"))
 
 (add-to-list 'load-path (expand-file-name "~/src/elisp"))
-;(add-to-list 'load-path "/opt/local/share/git-core/contrib/emacs")
+(add-to-list 'load-path "/usr/local/share/git-core/contrib/emacs")
 
 
 ;;;
-;;; Marmalde
+;;; MELPA, Marmalde
 ;;;
 (require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
@@ -26,6 +27,7 @@
 ;;;
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "PS1")
   (exec-path-from-shell-copy-env "EDITOR")
   (exec-path-from-shell-copy-env "EMAIL")
   (exec-path-from-shell-copy-env "ANDROID_SDK")
@@ -33,7 +35,8 @@
   (exec-path-from-shell-copy-env "ANDROID_SDK_ROOT")
   (exec-path-from-shell-copy-env "LANG")
   (exec-path-from-shell-copy-env "LC_COLLATE")
-  (exec-path-from-shell-copy-env "GTAGSFORCECPP"))
+  (exec-path-from-shell-copy-env "INFOPATH")
+  (exec-path-from-shell-copy-env "HOMEBREW_KEEP_INFO"))
 
 ;;
 ;; set language environment based on the LANG var
@@ -63,19 +66,13 @@
 (require 'warnings)
 (require 'outline)
 (require 'smtpmail)
-(require 'doc-view)
-(require 'speedbar)
 ;;
-;(require 'git-blame)
+(require 'git-blame)
 (require 'magit-blame)
+(require 'jabber)
 ;;
 (require 'psed)
-(require 'bm)
-(require 'bar-cursor)
-(require 'ssh)
-(require 'top-mode)
 (require 'sh-utils)
-(require 'jabber)
 
 
 ;;;;
@@ -94,8 +91,6 @@
 (setq-default fill-column 72)
 (setq-default save-place t)
 (setq-default ssh-directory-tracking-mode t)
-(setq-default bm-buffer-persistence t)
-(setq-default ispell-dictionary "russian")
 ;;;;
 (setq split-width-threshold nil)		    ; always split windows vertically
 (setq x-meta-keysym 'alt)
@@ -113,17 +108,10 @@
       smtpmail-smtp-server          "smtp.crystax.net"
       smtpmail-smtp-service         587
       smtpmail-stream-type          'starttls
-      smtpmail-debug-info           t
-      smtpmail-debug-verb           t)
-(setq calendar-date-style       'european
-      calendar-week-start-day   1
-      calendar-day-name-array   ["Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
-      calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" 
-                                 "Июнь" "Июль" "Август" "Сентябрь"
-                                 "Октябрь" "Ноябрь" "Декабрь"])
+      smtpmail-debug-info           nil
+      smtpmail-debug-verb           nil)
 (setq kill-whole-line t)
 (setq line-number-mode t)
-(setq column-number-mode t)
 (setq next-line-add-newlines nil)
 (setq next-screen-context-lines 1)
 (setq require-final-newline t)
@@ -132,13 +120,6 @@
       scroll-margin         0)
 (setq transient-mark-mode t                         ; transient mark mode
       mark-even-if-inactive t)                      ;
-(setq rlogin-explicit-args '("-8"))                 ; rlogin
-(setq vc-consult-headers nil)                       ; CVS
-(setq vc-mistrust-permissions t)                    ;
-(setq vc-follow-symlinks 'ask)
-(setq vc-cvs-stay-local nil)
-(setq cvs-auto-remove-handled 'status)
-(setq cvs-auto-remove-directories 'handled)
 (setq ring-bell-function '(lambda () ()))           ; no bells at all
 (setq message-log-max 1000)                         ; no limit on how many log messages to keep
 (setq woman-fill-frame     t                        ; WoMan
@@ -167,72 +148,46 @@
 (setq mail-user-agent 'gnus-user-agent)
 (setq gud-chdir-before-run nil)
 (setq gdb-show-main t)
-(setq process-coding-system-alist '(("cvs" . cp1251)))
-(setq printer-name "telecom")
-(setq ps-print-color-p nil)
-(setq ps-multibyte-buffer 'bdf-font)
 (setq font-lock-maximum-size nil)
 (setq font-lock-maximum-decoration t)
 (setq dired-recursive-deletes 'top
       dired-recursive-copies 'top)
-(setq doc-view-cache-directory     "/var/tmp/docview1000"
-      doc-view-resolution          1000)
-(setq bm-repository-size 10000)
-(setq zuav-fidogate-passwd 499679240)
-(setq c-default-style '((c++-mode . "stroustrup") (other . "stroustrup")))
 (setq blink-matching-paren-distance nil)
 (setq line-number-display-limit-width 2000)
-(setq auto-mode-alist
-      (cons '("/\\(rfc\\|std\\)[0-9]+\\.txt\\(\\.gz\\)?\\'" . rfcview-mode)
-            auto-mode-alist))
-(setq mpg123-command-args          '("-b 2048 --aggressive --stereo")
-      mpg123-startup-volume        50
-      mpg123-mp3-scan-bytes        500
-      mpg123-process-coding-system 'cp1251
-      mpg123-lazy-check            "mp3")
 (setq auto-insert-query nil)                     ; autotype, copyright, etc
 (setq inferior-lisp-program "/usr/bin/sbcl")
-(setq jabber-roster-show-title    nil
-      jabber-roster-line-format   " %c %-30n %u %-8s  %S"
-      jabber-roster-show-bindings nil
-      jabber-show-resources       nil
-      jabber-auto-reconnect       t
-      jabber-history-enabled      t
-      jabber-use-global-history   nil
-      jabber-backlog-number       1000
-      jabber-backlog-days         365.0)
 
 ;;;;
 ;;;; Turn on or off some modes and features
 ;;;;
 (auto-image-file-mode 1)                ; turn on viewing files as images
 (delete-selection-mode 1)               ; yank replaces selected region
-(tool-bar-mode '-1)                     ; no toolbar. I hate it too.
-(scroll-bar-mode '-1)	                ; no scroll-bar. I hate it too
+(scroll-bar-mode -1)	                ; no scroll-bar. I hate it too
+(tool-bar-mode -1)
 (auto-compression-mode 1)               ; turn on autodecompression of gz etc
-(display-time-mode -1)                  ; turn off time display
+(display-time-mode -1)                  ; turn off time and date display
 (mouse-avoidance-mode 'banish)          ; remove mouse to upper right corner
 (mouse-wheel-mode 1)                    ; turn on mouse wheel
 (desktop-save-mode 1)                   ; automatically save desktop on exit
-(size-indication-mode 1)                ; show size of the current file in the mode line
 (global-font-lock-mode t)
-(show-paren-mode)                       ; hilight corresp. parenthies
-;(bar-cursor-mode 1)                     ; change cursor from bar to block in overwrite mode
+(bar-cursor-mode 1)                     ; change cursor from bar to block in overwrite mode
 (windmove-default-keybindings)
 
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil                              t)
 (autoload 'hide-lines                    "hide-lines" "Hide lines based on a regexp"   t)
-(autoload 'rfcview-mode                  "rfcview"    nil                              t)
-(autoload 'ack                           "ack"        nil                              t)
-(autoload 'pcomplete/ack                 "pcmpl-ack")
-(autoload 'pcomplete/ack-grep            "pcmpl-ack")
 ;;(autoload 'do-not-edit-readonly          "do-not-edit")
 
 ;;
 (add-to-list 'warning-suppress-types '(undo discard-info))
-;; /sudo:eastfold.aintsys.com:/etc/
 (add-to-list 'tramp-default-proxies-alist 
              '("\\lorien\\'" "\\`root\\'" "/ssh:%h:"))
+
+;;;;
+;;;; doc-view
+;;;;
+(require 'doc-view)
+(setq doc-view-cache-directory "/var/tmp/docview1000"
+      doc-view-resolution      4800)
 
 ;;;;
 ;;;; find-file settings
@@ -248,13 +203,13 @@
         "../../*/include"
         "../src"
         "../../*/src"
-        "/usr/lib/erlang/lib"))
+        "/usr/local/lib/erlang/lib"))
 
 ;;;;
 ;;;; Erlang includes, erlang mode
 ;;;;
-(add-to-list 'load-path "/usr/local/Cellar/erlang/R16B02/lib/erlang/lib/tools-2.6.12/emacs")
-(setq erlang-root-dir "/usr/local/Cellar/erlang/R16B02")
+(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.6.14/emacs")
+(setq erlang-root-dir "/usr/local/lib/erlang")
 (require 'erlang-start)
 (setq inferior-erlang-display-buffer-any-frame t
       inferior-erlang-machine-options          '("-sname" "emacs"))
@@ -275,8 +230,8 @@
                 (t libname)))
     (mapconcat 'identity (cons verlibname (cdr parts)) "/")))
 ;;
-(erlang-lib-versioned-name "eunit/include/eunit.hrl")
-(erlang-lib-versioned-name "unit/include/eunit.hrl")
+;(erlang-lib-versioned-name "eunit/include/eunit.hrl")
+;(erlang-lib-versioned-name "unit/include/eunit.hrl")
 ;;
 (add-to-list 'ff-special-constructs 
     '("^-include(\"\\(.*\\)\"" .
@@ -298,16 +253,28 @@
                                (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)
                                ;;
                                (setq ff-other-file-alist 'erl-other-file-alist)))
-
 ;;;;
-;;;; hooks
+;;;; Makefile mode
 ;;;;
-;;;;;;; Shell mode
+(add-hook 'makefile-mode-hook '(lambda ()
+                                 (setq show-trailing-whitespace t)
+                                 (add-hook 'local-write-file-hooks
+                                           'delete-trailing-whitespace)))
+;;;;
+;;;; Shell mode
+;;;;
 (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
 (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-hook 'shell-mode-hook '(lambda () (setq tab-width 8)))
+;;;;
+
+;;;;
 ;;;; bookmark package (bm)
+;;;;
+(require 'bm)
+(setq-default bm-buffer-persistence t)
+(setq bm-repository-size 10000)
 (add-hook 'after-init-hook 'bm-repository-load)
 (add-hook 'find-file-hooks 'bm-buffer-restore)
 (add-hook 'kill-buffer-hook 'bm-buffer-save)
@@ -315,31 +282,58 @@
 (add-hook 'after-save-hook 'bm-buffer-save)
 (add-hook 'after-revert-hook 'bm-buffer-restore)
 (set-face-background 'bm-persistent-face "DarkOrange1")
-(set-face-background 'bm-face            "tomato")
+(set-face-background 'bm-face "tomato")
 
-;;;
-;;; w3m mode
-;;;
-;(require 'w3m)
-;(setq w3m-home-page "about://bookmark/"
-;      w3m-use-cookies t
-;      w3m-command-arguments (nconc w3m-command-arguments '("-cookie"))
-;      w3m-default-display-inline-images t)
-;(setq browse-url-browser-function 'w3m-browse-url)
-;(add-hook 'w3m-mode-hook '(lambda ()
-;                            (local-unset-key [up])
-;                            (local-unset-key [down])
-;                            (local-unset-key [left])
-;                            (local-unset-key [right])))
-;(define-key w3m-mode-map [s-left]  'w3m-previous-buffer)
-;(define-key w3m-mode-map [s-right] 'w3m-next-buffer)
-
+;;-;;;;;
+;;-;;;;; w3m mode
+;;-;;;;;
+;;-;;(require 'w3m)
+;;-;;(setq w3m-home-page "about://bookmark/"
+;;-;;      w3m-use-cookies t
+;;-;;      w3m-command-arguments (nconc w3m-command-arguments '("-cookie"))
+;;-;;      w3m-default-display-inline-images t)
+;;-;;;(setq browse-url-browser-function 'w3m-browse-url)
+;;-;;;(setq browse-url-browser-function 'browse-url-default-browser)
+;;-;;(add-hook 'w3m-mode-hook '(lambda ()
+;;-;;                            (local-unset-key [up])
+;;-;;                            (local-unset-key [down])
+;;-;;                            (local-unset-key [left])
+;;-;;                            (local-unset-key [right])))
+;;-;;(define-key w3m-mode-map [s-left]  'w3m-previous-buffer)
+;;-;;(define-key w3m-mode-map [s-right] 'w3m-next-buffer)
+;;-;;
+;;;;
 ;;;; jabber client
-(add-hook 'jabber-post-connect-hooks 'jabber-autoaway-start)
+;;;;
+(setq jabber-roster-show-title    nil
+      jabber-roster-line-format   " %c %-30n %u %-8s  %S"
+      jabber-roster-show-bindings nil
+      jabber-show-resources       nil
+      jabber-auto-reconnect       t
+      jabber-history-enabled      t
+      jabber-use-global-history   nil
+      jabber-backlog-number       1000
+      jabber-backlog-days         365.0)
+;;
+(defun zuav-jabber-notify-message (from text)
+  (call-process "/Applications/terminal-notifier.app/Contents/MacOS/terminal-notifier" nil nil nil
+                "-sender"   "org.gnu.Emacs"
+                "-title"    "Jabber Message"
+                "-subtitle" (concat "From: " from)
+                "-message"  text))
+
+;(zuav-jabber-notify-message "zuav" "text")
+;;
+(defun jabber-notify-message-hook (from buf text proposed-alert)
+  (zuav-jabber-notify-message from text))
+;;
+(add-hook 'jabber-post-connect-hooks  'jabber-autoaway-start)
+(add-hook 'jabber-alert-message-hooks 'jabber-notify-message-hook)
 
 ;;;;
 ;;;; CC mode
 ;;;;
+(setq c-default-style '((c++-mode . "stroustrup") (other . "stroustrup")))
 (add-hook 'c-mode-common-hook '(lambda () (add-hook 'local-write-file-hooks
                                                     'delete-trailing-whitespace)))
 (add-hook 'c-mode-common-hook '(lambda () (setq c-comment-only-line-offset '(0 . 0))))
@@ -374,8 +368,6 @@
                                (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)
                                (setq indent-tabs-mode t)))
 ;;;;
-(add-hook 'todo-mode-hook 'hl-line-mode)
-;;;;
 (add-hook 'dired-mode-hook 'hl-line-mode)
 ;;;;
 ;;;;
@@ -408,6 +400,12 @@
                             (setq show-trailing-whitespace t)
                             (setq tab-width 4)))
 ;;;;
+;;;; irfc
+;;;;
+(setq irfc-directory (expand-file-name "~/Documents/rfc"))
+(setq irfc-assoc-mode t)
+
+;;;;
 ;;;;  GUD mode
 ;;;;
 ;;;;(add-hook 'gdb-mode-hook
@@ -437,50 +435,19 @@
 
 (add-hook 'kill-buffer-hook 'gud-kill-buffer)
 
-;;
-;;(frame-width  (selected-frame))
-;;(frame-height (selected-frame))
-;;
-;; for 19" monitor:
-;;   11.12.2012 -- 25  83x35
-;;   03.01.2013 -- 24  89x36
-;;   01.02.2013 -- 23  89x37
-;;   01.03.2012 -- 22  96x39
-;;   03.04.2012 -- 21  96x40
-;;   01.05.2012 -- 22  104x42 (Droid), 104x44 (Liberation)
-;;   01.06.2012 -- 19  104x42 (Droid), 108x45 (Liberation)
-;;   02.07.2012 -- 18  104x42 (Droid), 108x47 (Liberation)
-;;   02.07.2012 -- 18         (Droid), 128x48 (Liberation)
-;;   06.08.2012 -- 17         (Droid), 140x48 (Liberation)
-;;   0x.09.2012 -- 13  158x48 (Menlo)
-;;   04.10.2012 -- 12  172x55 (Menlo)
-;;;;;;;(set-face-font 'default "-apple-Inconsolata-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-Liberation Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-Droid Sans Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-Roboto-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-inconsolata-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-Anonymous Pro-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
-;(set-default-font "-unknown-DejaVu Sans Mono-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
-;(set-default-font "-monotype-Courier New-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1")
-
 ;;;;
 ;;;; default frame parameters
 ;;;;
 ;; (pp (frame-parameters))
 ;; (pp (frame-parameters (car (frame-list))))
-;;;; todo: check for window system?
 (add-to-list 'default-frame-alist '(cursor-type . bar))
 (add-to-list 'default-frame-alist '(fullscreen . fullheight))
 (add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
 (add-to-list 'initial-frame-alist '(fullscreen . fullheight))
-(add-to-list 'initial-frame-alist '(width . 172))
-(add-to-list 'initial-frame-alist '(height . 55))
+(add-to-list 'initial-frame-alist '(width . 170))
+(add-to-list 'initial-frame-alist '(height . 56))
 (add-to-list 'initial-frame-alist '(top . 22))
 (add-to-list 'initial-frame-alist '(left . 110))
-(add-to-list 'speedbar-frame-parameters '(width . 30))
-(add-to-list 'speedbar-frame-parameters '(top . 23))
-(add-to-list 'speedbar-frame-parameters '(left . 3))
-(add-to-list 'speedbar-frame-parameters '(fullscreen . fullheight))
 
 ;; fix problem with incorrect russian font selection, without this line
 ;; for russian letters used some other proportional font
@@ -499,20 +466,21 @@ If current buffer is not in the Emasc Lisp mode, signal error."
   (eval-current-buffer)
   (message "Buffer evaluated successfully"))
 ;;
-(defun zuav-line-to-top-of-window ()
-  "Scroll current line to top of window.
-Replaces three keystroke sequence C-u 0 C-l."
-  (interactive)
-  (recenter 0))
 
-(defun switch-to-other-buffer ()
+(defun open-or-create-buffer-with-name (name create-fun)
+  "If buffer with the name NAME exists, then switch to it.
+Else call function CREATE-FUN."
   (interactive)
-  (switch-to-buffer (other-buffer)))
-
-(defun zuav-open-todo ()
-  (interactive)
-  (find-file (expand-file-name "~/lib/personal/todo.org")))
-
+  (let ((old-buffer (get-buffer name)))
+    (cond (old-buffer
+           (switch-to-buffer old-buffer))
+          (t
+           (let ((temp-buffer (generate-new-buffer "temp")))
+             ;;(message "created buffer with name: %s" (buffer-name temp-buffer))
+             (set-buffer temp-buffer)
+             (cd (expand-file-name "~"))
+             (funcall create-fun)
+             (kill-buffer temp-buffer))))))
 
 ;;;;
 ;;;; Global keybindings
@@ -525,55 +493,39 @@ Replaces three keystroke sequence C-u 0 C-l."
 (global-unset-key [M-left])
 (global-unset-key [f1])
 (global-unset-key [?\s-p])              ; was (ns-print-buffer)
-
 ;;
 (global-set-key [f1]              'bm-next)
-(global-set-key [f2]              'switch-to-other-buffer)
-(global-set-key [f3]              'zuav-open-todo)
+(global-set-key [f2]              (lambda () (interactive) (switch-to-buffer (other-buffer))))
+(global-set-key [f3]              (lambda () (interactive) (find-file (expand-file-name "~/lib/personal/todo.org"))))
 (global-set-key [f4]              'magit-status)
-;(global-set-key [f5]              'w3m)
+(global-set-key [f5]              'gnus)
 (global-set-key [f6]              'other-window)
 (global-set-key [f7]              'psed)
 (global-set-key [f8]              'my-eval-current-buffer)
-(global-set-key [f9]              'zuav-compile)
-(global-set-key [f11]             'shell)
+(global-set-key [f9]              'compile)
+(global-set-key [f11]             (lambda () (interactive) (open-or-create-buffer-with-name "*shell*" 'shell)))                               ; shell)
 (global-set-key [f12]             'ff-find-other-file)
-(global-set-key [M-f9]            'compile)
 (global-set-key [M-right]         'forward-sexp)
 (global-set-key [M-left]          'backward-sexp)
 (global-set-key [S-f1]            'bm-previous)
 (global-set-key [S-f3]            'calendar)
 (global-set-key [s-f1]            'bm-toggle)
-(global-set-key [A-f2]            'apt-utils-search)
-(global-set-key [s-f3]            'zuav-kill-buffer)
-(global-set-key [?\A-l]           'zuav-line-to-top-of-window)
-(global-set-key [home]            'beginning-of-line)
-(global-set-key [end]             'end-of-line)
-(global-set-key [kp-5]            'goto-line)
-(global-set-key [kp-7]            'beginning-of-line)
-(global-set-key [end]             'end-of-line)
-(global-set-key [kp-1]            'end-of-line)
+(global-set-key [s-f3]            (lambda () (interactive) (kill-buffer (current-buffer))))
+(global-set-key [home]            'beginning-of-buffer)
+(global-set-key [end]             'end-of-buffer)
 (global-set-key [?\C-.]           'pop-tag-mark)
 (global-set-key [C-left]          'backward-word)
 (global-set-key [C-right]         'forward-word)
-(global-set-key [C-kp-home]       'beginning-of-buffer)
-(global-set-key [C-kp-7]          'beginning-of-buffer)
-(global-set-key [C-kp-end]        'end-of-buffer)
-(global-set-key [C-kp-1]          'end-of-buffer)
-(global-set-key [C-kp-begin]      'goto-last-change)
-(global-set-key [begin]           'goto-line)
 (global-set-key [insertchar]      'overwrite-mode)
 (global-set-key [C-backspace]     'undo)
 (global-set-key [delete]          'delete-char)          ; for X
 (global-set-key "\C-x\C-b"        'buffer-menu)
-(global-set-key "\C-ci"           'todo-insert-item)     ; insert new item
 (global-set-key "\C-x\C-d"        'dired)
 (global-set-key "\C-cd"           'dictionary-search)
-(global-set-key [?\s-0]            'buffer-menu)
+(global-set-key [?\s-0]           'buffer-menu)
 (global-set-key "\C-ch"           'hide-lines)
 (global-set-key "\C-x\C-\\"       'goto-last-change)
 (global-set-key (kbd "C-c g")     'google-word-at-point)
-;(global-set-key [C-tab]           'speedbar-get-focus)
 (global-set-key [?\s-v]           'scroll-up-command)
 
 ;;;;
@@ -594,44 +546,15 @@ Replaces three keystroke sequence C-u 0 C-l."
 (define-key outline-mode-map [C--] 'hide-subtree)
 (define-key outline-mode-map [C-=] 'show-entry)
 
-
-;;> (global-set-key (kbd "C-j") 'jump-to-register)
+;;;;
+;;;; Save frequently visited files in registers
+;;;;
+(global-set-key (kbd "C-j") 'jump-to-register)
+(set-register ?e (cons 'file "~/.emacs"))
 ;;> 
 ;;> (set-register ?a (cons 'file "/sudo::/etc/apt/sources.list"))
 ;;> (set-register ?c (cons 'file "~/.irssi/config"))
 ;;> (set-register ?C (cons 'file "/sudo::/etc/default/console-setup"))
-;;> (set-register ?e (cons 'file "~/.emacs"))
-
-
-;; to correctly set X-Reply-To for fido messages
-;; borrowed from B.Tobotras' .emacs
-(add-hook 'message-setup-hook
-          '(lambda ()
-             ;; Add X-Comment-To: field. We need From: field from original
-             ;; letter. How to get right?
-             (if message-reply-buffer
-                 (let ((cur-buffer (current-buffer)) from-field)
-                   (save-excursion
-                     (set-buffer message-reply-buffer)
-                     (if (string-match"^From: " (buffer-string))
-                         (progn
-                           (setq from-start (+ (match-end 0) 1))
-                           (goto-char from-start)
-                           (end-of-line)
-                           (setq from-field (buffer-substring from-start (point))))))
-                   (if from-field
-                       (save-excursion
-                         (goto-char (point-min))
-                         (insert "X-Comment-To: "
-                                 (Make-Comment-To from-field) "\n")))))
-             ;(setq message-signature 'My-Signature)
-             ))
-
-(defun Make-Comment-To (from)
-  (if (string-match " *<.*> *" from)
-      (concat (substring from 0 (match-beginning 0)) (substring from (match-end 0)))
-    (if (string-match "\(.*\)" from)
-        (substring from (+ (match-beginning 0) 1) (- (match-end 0) 1)) from)))
 
 ;;;;
 ;;;; Supercite
@@ -679,147 +602,6 @@ Replaces three keystroke sequence C-u 0 C-l."
 (add-hook 'find-file-hooks  'auto-insert)
 (add-hook 'before-save-hook 'copyright-update)
 ;(remove-hook 'before-save-hook 'copyright-update)
-
-(defun truecrypt ()
-  "Start truecrypt program."
-  (interactive)
-  (call-process "/opt/truecrypt/7.1a/usr/bin/truecrypt" nil 0 nil))
-
-(defun lorien ()
-  "Start lorien virtual machine."
-  (interactive)
-  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "lorien"))
-
-(defun tangorodrim ()
-  "Start tangorodrim virtual machine."
-  (interactive)
-  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "tangorodrim"))
-
-(defun harad ()
-  "Start harad virtual machine."
-  (interactive)
-  (call-process "/usr/bin/virtualbox" nil 0 nil "--startvm" "harad"))
-
-(defun calibre ()
-  "Start Calibre."
-  (interactive)
-  (call-process "/opt/calibre/calibre" nil 0 nil))
-
-(defun qtdesigner ()
-  "Start Qt Designer."
-  (interactive)
-  (call-process "/opt/qtsdk-2010.05/qt/bin/designer" nil 0 nil))
-
-(defun googleearth ()
-  "Start googleearth."
-  (interactive)
-  (call-process "/usr/bin/googleearth" nil 0 nil))
-
-(defun icedove ()
-  "Start IceDove program."
-  (interactive)
-  (call-process "/usr/bin/icedove" nil 0 nil))
-
-(defun mozilla-thunderbird ()
-  "Start icedove program."
-  (interactive)
-  (start-process "icedove" "icedove" "icedove"))
-
-
-(defun chrome ()
-  "Start Chrome browser."
-  (interactive)
-  (call-process "google-chrome" nil 0 nil))
-
-(defun firefox ()
-  "Start firefox browser."
-  (interactive)
-  (call-process "iceweasel" nil 0 nil))
-
-(defun virtualbox ()
-  "Start VirtualBox."
-  (interactive)
-  (call-process "virtualbox" nil 0 nil))
-
-(defun xfig ()
-  "Start xfig program"
-  (interactive)
-  (call-process "xfig" nil 0 nil))
-
-(defun xpdf ()
-  "Start xpdf program"
-  (interactive)
-  (call-process "xpdf" nil 0 nil))
-
-(defun k3b ()
-  "Start k3b program"
-  (interactive)
-  (call-process "k3b" nil 0 nil))
-
-(defun mplayer (options file)
-  "Start mplayer program"
-  (interactive "sOptions: \nfView file: ")
-  (setq file (expand-file-name file))
-  (setq options (concat "-fs " options))
-  (apply 'start-process "mplayer" "mplayer" "mplayer" (append (split-string options) (list file))))
-
-(defun soffice (file)
-  "Start OpenOffice program with file to edit"
-  (interactive "fFile name: ")
-  (setq file (expand-file-name file))
-  (apply 'call-process "soffice" nil 0 nil (list file)))
-
-(defun dvd (track)
-  "Run mplayer to View DVD."
-  (interactive "sTrack number: ")
-  (let ((option (concat "dvd://" track)))
-    (apply 'call-process "mplayer" nil 0 nil (list option))))
-
-(defvar zuav-run-today-file "/home/zuav/.run-today"
-  "File name where started today funcs are written.")
-
-(defun zuav-run-once (func)
-  "Run function FUNC if it was not run today."
-  (save-excursion
-    (find-file zuav-run-today-file)
-    (let* ((run-list-date nil)
-           (run-list nil)
-           (today (calendar-current-date))
-           (run t))
-      (if (> (point-max) (point-min))
-          (progn (setq run-list-date (read (current-buffer)))
-                 (setq run-list (read (current-buffer)))))
-      (cond ((null run-list-date)                  ; no run-today file
-             (progn (setq run-list-date today)
-                    (setq run-list (list func))))
-            ((equal run-list-date today)           ; equal dates
-             (if (member func run-list)
-                 (setq run nil)
-               (setq run-list (cons func run-list))))
-            (t                                     ; not equal dates
-             (progn (setq run-list-date today)
-                    (setq run-list (list func)))))
-      (if (null run)
-          (kill-buffer (current-buffer))
-        (progn
-          ;; write new run-today file
-          (delete-region (point-min) (point-max))
-          (print run-list-date (current-buffer))
-          (print run-list (current-buffer))
-          (write-file zuav-run-today-file)
-          (kill-buffer (current-buffer))
-          ;; run FUNC
-          (apply func nil))))))
-
-(defun zuav-kill-buffer ()
-  "Kill current buffer"
-  (interactive)
-  (kill-buffer (current-buffer)))
-
-(defun zuav-compile ()
-  "Just run make without prompting."
-  (interactive)
-  (compile compile-command))
 
 ;;;;
 ;;;; Function from gnu.emacs.sources
@@ -927,24 +709,7 @@ maybe accessed via the corresponding tramp method."
 
 (eval-after-load "tetris"
   '(progn
-     (setq tetris-score-file "/home/zuav/lib/personal/tetris-scores")))
-
-
-;;
-;;(require 'gtags)
-;(add-to-list 'load-path "/opt/local/share/gtags")
-;(autoload 'gtags-mode                    "gtags" "" t)
-;(add-hook 'gtags-mode-hook
-;  '(lambda ()
-;     (define-key gtags-mode-map (concat gtags-prefix-key "P") 'gtags-find-file)
-;     (define-key gtags-mode-map (concat gtags-prefix-key "f") 'gtags-parse-file)
-;     (define-key gtags-mode-map (concat gtags-prefix-key "s") 'gtags-find-symbol)
-;     (define-key gtags-mode-map (concat gtags-prefix-key "r") 'gtags-find-rtag)
-;     (define-key gtags-mode-map (concat gtags-prefix-key "t") 'gtags-pop-stack)
-;     (define-key gtags-mode-map (concat gtags-prefix-key "v") 'gtags-visit-rootdir)
-;     (define-key gtags-mode-map [?\M-.]                       'gtags-find-tag)))
-;(add-hook 'c-mode-common-hook '(lambda () (gtags-mode 1)))
-
+     (setq tetris-score-file "/Users/zuav/lib/personal/tetris-scores")))
 
 
 (custom-set-variables
@@ -952,36 +717,45 @@ maybe accessed via the corresponding tramp method."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Buffer-menu-name-width 38)
  '(auth-source-save-behavior nil)
+ '(calendar-date-style (quote european))
+ '(calendar-day-abbrev-array ["Вс" "Пн" "Вт" "Чт" "Пт" "Сб" "Вс"])
+ '(calendar-day-name-array ["Воскресенье" "Понедельник" "Вторник" "Среда" "Четверг" "Пятница" "Суббота"])
+ '(calendar-month-abbrev-array ["Янв" "Фев" "Мар" "Апр" "Май" "Июн" "Июл" "Авг" "Сен" "Окт" "Ноя" "Дек"])
+ '(calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" "Июнь" "Июль" "Август" "Сентябрь" "Октябрь" "Ноябрь" "Декабрь"])
+ '(calendar-week-start-day 1)
  '(canlock-password "b600beba9651f7c871f347668e74849f7fc7b8fb")
  '(column-number-mode t)
- '(display-time-mode t)
- '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)))))
+ '(custom-safe-themes (quote ("e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(ispell-dictionary "english")
+ '(ispell-program-name "aspell")
+ '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)) ("zuav@crystax.net" (:connection-type . network)) ("alexander.zhuckov@gmail.com" (:connection-type . starttls)))))
  '(jabber-alert-message-hooks (quote (jabber-message-scroll)))
  '(jabber-alert-presence-hooks nil)
+ '(jabber-auto-reconnect t)
+ '(jabber-backlog-days 365.0)
+ '(jabber-backlog-number 1000)
+ '(jabber-chat-fill-long-lines nil)
+ '(jabber-history-enabled t)
+ '(jabber-roster-line-format " %c %-30n %u %-8s  %S")
+ '(jabber-roster-show-bindings t)
+ '(jabber-roster-show-title nil)
+ '(jabber-use-global-history nil)
+ '(monokai-distinct-fringe-background t)
+ '(monokai-high-contrast-mode-line nil)
+ '(monokai-use-variable-pitch nil)
+ '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1) ((control)))))
+ '(ping-program-options (quote ("-c 8")))
  '(show-paren-mode t)
  '(size-indication-mode t)
- '(tool-bar-mode nil))
+ '(speedbar-supported-extension-expressions (quote (".org" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".js" ".f\\(90\\|77\\|or\\)?" ".ad[abs]" ".p[lm]" ".tcl" ".m" ".scm" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".[he]rl")))
+ '(sr-speedbar-delete-windows t)
+ '(sr-speedbar-right-side t)
+ '(sr-speedbar-skip-other-window-p t)
+ '(sr-speedbar-width-x 42)
+ '(vc-follow-symlinks t))
 
-
-;;;;
-;;;; Load save sessions support
-;;;;
-;;-;;(desktop-load-default)
-;;-;;(desktop-read)
-(savehist-load)
-
-;;(semantic-load-enable-code-helpers)
-
-;;;;
-;;;; Start automatically
-;;;;
-;(zuav-run-once 'gnus)
-;(zuav-run-once 'todo-show)
-
-(server-start)
-
-;;;; .emacs ends 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -989,4 +763,7 @@ maybe accessed via the corresponding tramp method."
  ;; If there is more than one, they won't work right.
  )
 
-;(speedbar)
+(savehist-load)
+
+(server-start)
+;;;; .emacs ends 
