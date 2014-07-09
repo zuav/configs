@@ -208,7 +208,7 @@
 ;;;;
 ;;;; Erlang includes, erlang mode
 ;;;;
-(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.6.14/emacs")
+(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.6.15/emacs")
 (setq erlang-root-dir "/usr/local/lib/erlang")
 (require 'erlang-start)
 (setq inferior-erlang-display-buffer-any-frame t
@@ -436,6 +436,13 @@
 (add-hook 'kill-buffer-hook 'gud-kill-buffer)
 
 ;;;;
+;;;; Org mode
+;;;;
+(require 'org)
+(add-hook 'org-mode-hook '(lambda ()
+                            (local-unset-key (kbd "C-j"))))
+
+;;;;
 ;;;; default frame parameters
 ;;;;
 ;; (pp (frame-parameters))
@@ -465,22 +472,32 @@ If current buffer is not in the Emasc Lisp mode, signal error."
       (error "Not a Emacs Lisp file: %s" (buffer-file-name (current-buffer))))
   (eval-current-buffer)
   (message "Buffer evaluated successfully"))
-;;
 
-(defun open-or-create-buffer-with-name (name create-fun)
-  "If buffer with the name NAME exists, then switch to it.
-Else call function CREATE-FUN."
+;;
+(defun open-create-named-shell-buffer (name &optional work-dir rc-file)
+  "Run shell in the buffer with the name NAME and set working directory to WORK-DIR.
+If such buffer exists, then switch to it. If WORK-DIR was
+omitted, then home directory will be used as working directory.
+RC-FILE is a file name to be used as an argument to the --rcfile
+option. If RC-FILE was omitted, then ~/.profile will be used."
   (interactive)
-  (let ((old-buffer (get-buffer name)))
+  (unless work-dir (setq work-dir "~"))
+  (unless rc-file (setq rc-file "~/.profile"))
+  (let ((old-buffer (get-buffer name))
+        (explicit-bash-args (list "--rcfile" rc-file)))
     (cond (old-buffer
-           (switch-to-buffer old-buffer))
+           (shell name))
           (t
            (let ((temp-buffer (generate-new-buffer "temp")))
              ;;(message "created buffer with name: %s" (buffer-name temp-buffer))
              (set-buffer temp-buffer)
-             (cd (expand-file-name "~"))
-             (funcall create-fun)
+             (cd (expand-file-name work-dir))
+             (shell name)
              (kill-buffer temp-buffer))))))
+
+;(global-unset-key [?\s-3])
+;(global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "test" "/tmp")))
+
 
 ;;;;
 ;;;; Global keybindings
@@ -503,7 +520,7 @@ Else call function CREATE-FUN."
 (global-set-key [f7]              'psed)
 (global-set-key [f8]              'my-eval-current-buffer)
 (global-set-key [f9]              'compile)
-(global-set-key [f11]             (lambda () (interactive) (open-or-create-buffer-with-name "*shell*" 'shell)))                               ; shell)
+(global-set-key [f11]             (lambda () (interactive) (open-create-named-shell-buffer "*shell*")))
 (global-set-key [f12]             'ff-find-other-file)
 (global-set-key [M-right]         'forward-sexp)
 (global-set-key [M-left]          'backward-sexp)
@@ -547,10 +564,12 @@ Else call function CREATE-FUN."
 (define-key outline-mode-map [C-=] 'show-entry)
 
 ;;;;
-;;;; Save frequently visited files in registers
+;;;; Save frequently visited files in registers or assign then to quick keys
+;;;; 
 ;;;;
-(global-set-key (kbd "C-j") 'jump-to-register)
+(global-set-key  (kbd "C-j") 'jump-to-register)
 (set-register ?e (cons 'file "~/.emacs"))
+(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "ndk" "~/src/google/ndk/platform/ndk" "~/src/scripts/ndk-shell-rc.sh")))
 ;;> 
 ;;> (set-register ?a (cons 'file "/sudo::/etc/apt/sources.list"))
 ;;> (set-register ?c (cons 'file "~/.irssi/config"))
