@@ -1,5 +1,5 @@
 [core]
-        pager = ""
+        pager = "cat"
 [color]
 	ui = auto
 [user]
