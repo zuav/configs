@@ -474,17 +474,13 @@ If current buffer is not in the Emasc Lisp mode, signal error."
   (message "Buffer evaluated successfully"))
 
 ;;
-(defun open-create-named-shell-buffer (name &optional work-dir rc-file)
+(defun open-create-named-shell-buffer (name &optional work-dir)
   "Run shell in the buffer with the name NAME and set working directory to WORK-DIR.
-If such buffer exists, then switch to it. If WORK-DIR was
-omitted, then home directory will be used as working directory.
-RC-FILE is a file name to be used as an argument to the --rcfile
-option. If RC-FILE was omitted, then ~/.profile will be used."
+If WORK-DIR is omitted, then use home directory as working directory.
+If buffer with name NAME exists, then switch to it."
   (interactive)
   (unless work-dir (setq work-dir "~"))
-  (unless rc-file (setq rc-file "~/.profile"))
-  (let ((old-buffer (get-buffer name))
-        (explicit-bash-args (list "--rcfile" rc-file)))
+  (let ((old-buffer (get-buffer name)))
     (cond (old-buffer
            (shell name))
           (t
@@ -568,8 +564,11 @@ option. If RC-FILE was omitted, then ~/.profile will be used."
 ;;;; 
 ;;;;
 (global-set-key  (kbd "C-j") 'jump-to-register)
+(set-register ?d (cons 'file "~/Downloads"))
 (set-register ?e (cons 'file "~/.emacs"))
-(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "ndk" "~/src/google/ndk/platform/ndk" "~/src/scripts/ndk-shell-rc.sh")))
+(set-register ?h (cons 'file "~/"))
+(global-set-key [?\s-1] (lambda () (interactive) (jump-to-register ?h)))
+(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "ndk" "~/src/ndk/platform/ndk")))
 ;;> 
 ;;> (set-register ?a (cons 'file "/sudo::/etc/apt/sources.list"))
 ;;> (set-register ?c (cons 'file "~/.irssi/config"))
