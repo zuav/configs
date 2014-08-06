@@ -284,24 +284,24 @@
 (set-face-background 'bm-persistent-face "DarkOrange1")
 (set-face-background 'bm-face "tomato")
 
-;;-;;;;;
-;;-;;;;; w3m mode
-;;-;;;;;
-;;-;;(require 'w3m)
+;;;
+;;; w3m mode
+;;;
+(require 'w3m)
 ;;-;;(setq w3m-home-page "about://bookmark/"
 ;;-;;      w3m-use-cookies t
 ;;-;;      w3m-command-arguments (nconc w3m-command-arguments '("-cookie"))
 ;;-;;      w3m-default-display-inline-images t)
-;;-;;;(setq browse-url-browser-function 'w3m-browse-url)
-;;-;;;(setq browse-url-browser-function 'browse-url-default-browser)
-;;-;;(add-hook 'w3m-mode-hook '(lambda ()
-;;-;;                            (local-unset-key [up])
-;;-;;                            (local-unset-key [down])
-;;-;;                            (local-unset-key [left])
-;;-;;                            (local-unset-key [right])))
-;;-;;(define-key w3m-mode-map [s-left]  'w3m-previous-buffer)
-;;-;;(define-key w3m-mode-map [s-right] 'w3m-next-buffer)
-;;-;;
+;(setq browse-url-browser-function 'w3m-browse-url)
+;(setq browse-url-browser-function 'browse-url-default-browser)
+(add-hook 'w3m-mode-hook '(lambda ()
+                            (local-unset-key [up])
+                            (local-unset-key [down])
+                            (local-unset-key [left])
+                            (local-unset-key [right])))
+(define-key w3m-mode-map [s-left]  'w3m-previous-buffer)
+(define-key w3m-mode-map [s-right] 'w3m-next-buffer)
+
 ;;;;
 ;;;; jabber client
 ;;;;
@@ -447,14 +447,31 @@
 ;;;;
 ;; (pp (frame-parameters))
 ;; (pp (frame-parameters (car (frame-list))))
+;; (frame-width (selected-frame))
+;; (frame-height (selected-frame))
 (add-to-list 'default-frame-alist '(cursor-type . bar))
 (add-to-list 'default-frame-alist '(fullscreen . fullheight))
-(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
-(add-to-list 'initial-frame-alist '(fullscreen . fullheight))
-(add-to-list 'initial-frame-alist '(width . 170))
-(add-to-list 'initial-frame-alist '(height . 56))
-(add-to-list 'initial-frame-alist '(top . 22))
-(add-to-list 'initial-frame-alist '(left . 110))
+;(add-to-list 'initial-frame-alist '(fullscreen . fullheight))
+;;
+;; menlo, 28: 83x27 fullscreen: 28.07.2014
+;; menlo, 27: 88x28 fullscreen: 05.08.2014
+;;
+(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-27-*-*-*-m-0-iso10646-1"))
+(add-to-list 'initial-frame-alist '(mode . dark))
+(add-to-list 'initial-frame-alist '(background-color . "black"))
+(add-to-list 'initial-frame-alist '(foreground-color . "gray85"))
+(add-to-list 'initial-frame-alist '(cursor-color . "white"))
+;(add-to-list 'initial-frame-alist '(width . 160))
+;(add-to-list 'initial-frame-alist '(height . 56))
+
+;(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
+;(add-to-list 'initial-frame-alist '(width . 160))
+;(add-to-list 'initial-frame-alist '(height . 56))
+;(add-to-list 'initial-frame-alist '(top . 22))
+;(add-to-list 'initial-frame-alist '(left . 110))
+
+(require 'speedbar)
+(add-to-list 'speedbar-frame-parameters '(background-color . "grey"))
 
 ;; fix problem with incorrect russian font selection, without this line
 ;; for russian letters used some other proportional font
@@ -735,7 +752,7 @@ maybe accessed via the corresponding tramp method."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(Buffer-menu-name-width 38)
+ '(Buffer-menu-name-width 28)
  '(auth-source-save-behavior nil)
  '(calendar-date-style (quote european))
  '(calendar-day-abbrev-array ["Вс" "Пн" "Вт" "Чт" "Пт" "Сб" "Вс"])
