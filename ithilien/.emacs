@@ -455,18 +455,17 @@
 ;;
 ;; menlo, 28: 83x27 fullscreen: 28.07.2014
 ;; menlo, 27: 88x28 fullscreen: 05.08.2014
+;; menlo, 26: 88x28 fullscreen: 01.09.2014
 ;;
-(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-27-*-*-*-m-0-iso10646-1"))
+(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-26-*-*-*-m-0-iso10646-1"))
 (add-to-list 'initial-frame-alist '(mode . dark))
 (add-to-list 'initial-frame-alist '(background-color . "black"))
 (add-to-list 'initial-frame-alist '(foreground-color . "gray85"))
 (add-to-list 'initial-frame-alist '(cursor-color . "white"))
-;(add-to-list 'initial-frame-alist '(width . 160))
-;(add-to-list 'initial-frame-alist '(height . 56))
 
-;(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
-;(add-to-list 'initial-frame-alist '(width . 160))
-;(add-to-list 'initial-frame-alist '(height . 56))
+;-;(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
+;-;(add-to-list 'initial-frame-alist '(width . 160))
+;-;(add-to-list 'initial-frame-alist '(height . 56))
 ;(add-to-list 'initial-frame-alist '(top . 22))
 ;(add-to-list 'initial-frame-alist '(left . 110))
 
@@ -511,7 +510,11 @@ If buffer with name NAME exists, then switch to it."
 ;(global-unset-key [?\s-3])
 ;(global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "test" "/tmp")))
 
-
+;;;;
+;;;; Ruby
+;;;;
+(add-hook 'inf-ruby-mode-hook '(lambda ()
+                                 (setq comint-process-echoes t)))
 ;;;;
 ;;;; Global keybindings
 ;;;;
@@ -584,8 +587,11 @@ If buffer with name NAME exists, then switch to it."
 (set-register ?d (cons 'file "~/Downloads"))
 (set-register ?e (cons 'file "~/.emacs"))
 (set-register ?h (cons 'file "~/"))
+(set-register ?t (cons 'file "/tmp"))
 (global-set-key [?\s-1] (lambda () (interactive) (jump-to-register ?h)))
 (global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "ndk" "~/src/ndk/platform/ndk")))
+(global-set-key [?\s-5] (lambda () (interactive) (open-create-named-shell-buffer "ndk-test" "~/src/ndk-test")))
+(global-set-key [?\s-8] (lambda () (interactive) (run-ruby)))
 ;;> 
 ;;> (set-register ?a (cons 'file "/sudo::/etc/apt/sources.list"))
 ;;> (set-register ?c (cons 'file "~/.irssi/config"))
@@ -623,7 +629,7 @@ If buffer with name NAME exists, then switch to it."
 ;;;;
 ;;;; Insidious Big Brother Database (bbdb)
 ;;;;
-;(require 'bbdb)
+(require 'bbdb)
 ;(setq bbdb-file "~/lib/personal/bbdb"
 ;      bbdb-north-american-phone-numbers-p nil
 ;      bbdb-no-duplicates-p t
@@ -762,7 +768,7 @@ maybe accessed via the corresponding tramp method."
  '(calendar-week-start-day 1)
  '(canlock-password "b600beba9651f7c871f347668e74849f7fc7b8fb")
  '(column-number-mode t)
- '(custom-safe-themes (quote ("e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(custom-safe-themes (quote ("bd115791a5ac6058164193164fd1245ac9dc97207783eae036f0bfc9ad9670e0" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(ispell-dictionary "english")
  '(ispell-program-name "aspell")
  '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)) ("zuav@crystax.net" (:connection-type . network)) ("alexander.zhuckov@gmail.com" (:connection-type . starttls)))))
@@ -772,6 +778,7 @@ maybe accessed via the corresponding tramp method."
  '(jabber-backlog-days 365.0)
  '(jabber-backlog-number 1000)
  '(jabber-chat-fill-long-lines nil)
+ '(jabber-connection-ssl-program nil)
  '(jabber-history-enabled t)
  '(jabber-roster-line-format " %c %-30n %u %-8s  %S")
  '(jabber-roster-show-bindings t)
