@@ -148,8 +148,6 @@
 (setq mail-user-agent 'gnus-user-agent)
 (setq gud-chdir-before-run nil)
 (setq gdb-show-main t)
-(setq font-lock-maximum-size nil)
-(setq font-lock-maximum-decoration t)
 (setq dired-recursive-deletes 'top
       dired-recursive-copies 'top)
 (setq blink-matching-paren-distance nil)
@@ -169,7 +167,6 @@
 (mouse-avoidance-mode 'banish)          ; remove mouse to upper right corner
 (mouse-wheel-mode 1)                    ; turn on mouse wheel
 (desktop-save-mode 1)                   ; automatically save desktop on exit
-(global-font-lock-mode t)
 (bar-cursor-mode 1)                     ; change cursor from bar to block in overwrite mode
 (windmove-default-keybindings)
 
@@ -768,7 +765,7 @@ maybe accessed via the corresponding tramp method."
  '(calendar-week-start-day 1)
  '(canlock-password "b600beba9651f7c871f347668e74849f7fc7b8fb")
  '(column-number-mode t)
- '(custom-safe-themes (quote ("bd115791a5ac6058164193164fd1245ac9dc97207783eae036f0bfc9ad9670e0" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(custom-safe-themes (quote ("0e3c610358b5a20468b9e5598997407754033d27fb87a6cbbc26450275bd0219" "bd115791a5ac6058164193164fd1245ac9dc97207783eae036f0bfc9ad9670e0" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(ispell-dictionary "english")
  '(ispell-program-name "aspell")
  '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)) ("zuav@crystax.net" (:connection-type . network)) ("alexander.zhuckov@gmail.com" (:connection-type . starttls)))))
