@@ -205,7 +205,7 @@
 ;;;;
 ;;;; Erlang includes, erlang mode
 ;;;;
-(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.6.15/emacs")
+(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.7/emacs")
 (setq erlang-root-dir "/usr/local/lib/erlang")
 (require 'erlang-start)
 (setq inferior-erlang-display-buffer-any-frame t
@@ -453,8 +453,9 @@
 ;; menlo, 28: 83x27 fullscreen: 28.07.2014
 ;; menlo, 27: 88x28 fullscreen: 05.08.2014
 ;; menlo, 26: 88x28 fullscreen: 01.09.2014
+;; menlo, 25: 93x30 fullscreen: 01.10.2014
 ;;
-(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-26-*-*-*-m-0-iso10646-1"))
+(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-25-*-*-*-m-0-iso10646-1"))
 (add-to-list 'initial-frame-alist '(mode . dark))
 (add-to-list 'initial-frame-alist '(background-color . "black"))
 (add-to-list 'initial-frame-alist '(foreground-color . "gray85"))
@@ -512,6 +513,9 @@ If buffer with name NAME exists, then switch to it."
 ;;;;
 (add-hook 'inf-ruby-mode-hook '(lambda ()
                                  (setq comint-process-echoes t)))
+(add-hook 'ruby-mode-hook '(lambda () (add-hook 'local-write-file-hooks
+                                                'delete-trailing-whitespace)))
+
 ;;;;
 ;;;; Global keybindings
 ;;;;
@@ -765,7 +769,7 @@ maybe accessed via the corresponding tramp method."
  '(calendar-week-start-day 1)
  '(canlock-password "b600beba9651f7c871f347668e74849f7fc7b8fb")
  '(column-number-mode t)
- '(custom-safe-themes (quote ("0e3c610358b5a20468b9e5598997407754033d27fb87a6cbbc26450275bd0219" "bd115791a5ac6058164193164fd1245ac9dc97207783eae036f0bfc9ad9670e0" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(custom-safe-themes (quote ("57f8801351e8b7677923c9fe547f7e19f38c99b80d68c34da6fa9b94dc6d3297" "0e3c610358b5a20468b9e5598997407754033d27fb87a6cbbc26450275bd0219" "bd115791a5ac6058164193164fd1245ac9dc97207783eae036f0bfc9ad9670e0" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(ispell-dictionary "english")
  '(ispell-program-name "aspell")
  '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)) ("zuav@crystax.net" (:connection-type . network)) ("alexander.zhuckov@gmail.com" (:connection-type . starttls)))))
