@@ -12,12 +12,11 @@
 (add-to-list 'load-path (expand-file-name "~/src/elisp"))
 (add-to-list 'load-path "/usr/local/share/git-core/contrib/emacs")
 
-
 ;;;
 ;;; MELPA, Marmalde
 ;;;
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
@@ -33,10 +32,14 @@
   (exec-path-from-shell-copy-env "ANDROID_SDK")
   (exec-path-from-shell-copy-env "ANDROID_HOME")
   (exec-path-from-shell-copy-env "ANDROID_SDK_ROOT")
+  (exec-path-from-shell-copy-env "CREW_DEVEL_URL")
+  (exec-path-from-shell-copy-env "CREW_DEVEL_BRANCH")
+  (exec-path-from-shell-copy-env "CREW_DOWNLOAD_BASE")
+  (exec-path-from-shell-copy-env "CREW_NDK_DIR")
+  (exec-path-from-shell-copy-env "CRYSTAX_NDK_BASE_TMP_DIR")
   (exec-path-from-shell-copy-env "LANG")
   (exec-path-from-shell-copy-env "LC_COLLATE")
-  (exec-path-from-shell-copy-env "INFOPATH")
-  (exec-path-from-shell-copy-env "HOMEBREW_KEEP_INFO"))
+  (exec-path-from-shell-copy-env "INFOPATH"))
 
 ;;
 ;; set language environment based on the LANG var
@@ -68,8 +71,6 @@
 (require 'smtpmail)
 ;;
 (require 'git-blame)
-(require 'magit-blame)
-(require 'jabber)
 ;;
 (require 'psed)
 (require 'sh-utils)
@@ -93,8 +94,6 @@
 (setq-default ssh-directory-tracking-mode t)
 ;;;;
 (setq split-width-threshold nil)		    ; always split windows vertically
-(setq x-meta-keysym 'alt)
-(setq x-super-keysym 'meta)
 (setq default-indicate-empty-lines nil)
 (setq backup-by-copying t)
 (setq case-fold-file-names nil)
@@ -141,10 +140,7 @@
 (setq tramp-default-method "scp")
 (setq password-cache-expiry nil)                     ; for tramp
 (setq dictionary-server "localhost")
-(setq kill-emacs-query-functions
-      (append kill-emacs-query-functions
-              (list '(lambda ()
-                       (yes-or-no-p "Really kill emacs? ")))))
+(setq confirm-kill-emacs 'yes-or-no-p)
 (setq mail-user-agent 'gnus-user-agent)
 (setq gud-chdir-before-run nil)
 (setq gdb-show-main t)
@@ -154,6 +150,7 @@
 (setq line-number-display-limit-width 2000)
 (setq auto-insert-query nil)                     ; autotype, copyright, etc
 (setq inferior-lisp-program "/usr/bin/sbcl")
+;(setq magit-last-seen-setup-instructions "1.4.0")
 
 ;;;;
 ;;;; Turn on or off some modes and features
@@ -169,15 +166,16 @@
 (desktop-save-mode 1)                   ; automatically save desktop on exit
 (bar-cursor-mode 1)                     ; change cursor from bar to block in overwrite mode
 (windmove-default-keybindings)
+(display-time-mode 1)
+(global-hl-line-mode -1)
 
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil                              t)
 (autoload 'hide-lines                    "hide-lines" "Hide lines based on a regexp"   t)
 ;;(autoload 'do-not-edit-readonly          "do-not-edit")
 
-;;
+;; /sudo:root@eriador:/etc
 (add-to-list 'warning-suppress-types '(undo discard-info))
-(add-to-list 'tramp-default-proxies-alist 
-             '("\\lorien\\'" "\\`root\\'" "/ssh:%h:"))
+(set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
 
 ;;;;
 ;;;; doc-view
@@ -205,7 +203,7 @@
 ;;;;
 ;;;; Erlang includes, erlang mode
 ;;;;
-(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.7/emacs")
+(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.9.1/emacs")
 (setq erlang-root-dir "/usr/local/lib/erlang")
 (require 'erlang-start)
 (setq inferior-erlang-display-buffer-any-frame t
@@ -251,6 +249,10 @@
                                ;;
                                (setq ff-other-file-alist 'erl-other-file-alist)))
 ;;;;
+;;;; Objective C++
+;;;;
+(add-to-list 'auto-mode-alist '("\\.mm\\'" . objc-mode))
+;;;;
 ;;;; Makefile mode
 ;;;;
 (add-hook 'makefile-mode-hook '(lambda ()
@@ -280,52 +282,6 @@
 (add-hook 'after-revert-hook 'bm-buffer-restore)
 (set-face-background 'bm-persistent-face "DarkOrange1")
 (set-face-background 'bm-face "tomato")
-
-;;;
-;;; w3m mode
-;;;
-(require 'w3m)
-;;-;;(setq w3m-home-page "about://bookmark/"
-;;-;;      w3m-use-cookies t
-;;-;;      w3m-command-arguments (nconc w3m-command-arguments '("-cookie"))
-;;-;;      w3m-default-display-inline-images t)
-;(setq browse-url-browser-function 'w3m-browse-url)
-;(setq browse-url-browser-function 'browse-url-default-browser)
-(add-hook 'w3m-mode-hook '(lambda ()
-                            (local-unset-key [up])
-                            (local-unset-key [down])
-                            (local-unset-key [left])
-                            (local-unset-key [right])))
-(define-key w3m-mode-map [s-left]  'w3m-previous-buffer)
-(define-key w3m-mode-map [s-right] 'w3m-next-buffer)
-
-;;;;
-;;;; jabber client
-;;;;
-(setq jabber-roster-show-title    nil
-      jabber-roster-line-format   " %c %-30n %u %-8s  %S"
-      jabber-roster-show-bindings nil
-      jabber-show-resources       nil
-      jabber-auto-reconnect       t
-      jabber-history-enabled      t
-      jabber-use-global-history   nil
-      jabber-backlog-number       1000
-      jabber-backlog-days         365.0)
-;;
-(defun zuav-jabber-notify-message (from text)
-  (call-process "/Applications/terminal-notifier.app/Contents/MacOS/terminal-notifier" nil nil nil
-                "-sender"   "org.gnu.Emacs"
-                "-title"    "Jabber Message"
-                "-subtitle" (concat "From: " from)
-                "-message"  text))
-
-;(zuav-jabber-notify-message "zuav" "text")
-;;
-(defun jabber-notify-message-hook (from buf text proposed-alert)
-  (zuav-jabber-notify-message from text))
-;;
-(add-hook 'jabber-post-connect-hooks  'jabber-autoaway-start)
-(add-hook 'jabber-alert-message-hooks 'jabber-notify-message-hook)
 
 ;;;;
 ;;;; CC mode
@@ -401,44 +357,22 @@
 ;;;;
 (setq irfc-directory (expand-file-name "~/Documents/rfc"))
 (setq irfc-assoc-mode t)
-
-;;;;
-;;;;  GUD mode
-;;;;
-;;;;(add-hook 'gdb-mode-hook
-;;;;          '(lambda ()
-;;;;             (local-set-key [f8] 'gud-next)
-;;;;             (local-set-key [f7] 'gud-step)))
-;;;;
-;;;; Add color to the current GUD line (obrigado google)
-;;;;
-(defvar gud-overlay
-  (let* ((ov (make-overlay (point-min) (point-min))))
-    (overlay-put ov 'face 'secondary-selection) ov)
-  "Overlay variable for GUD highlighting.")
-
-(defadvice gud-display-line (after my-gud-highlight act)
-  "Highlight current line."
-  (let* ((ov gud-overlay)
-         (bf (gud-find-file true-file)))
-    (save-excursion
-      (set-buffer bf)
-      (move-overlay ov (line-beginning-position) (line-end-position)
-                    (current-buffer)))))
-
-(defun gud-kill-buffer ()
-  (if (eq major-mode 'gud-mode)
-      (delete-overlay gud-overlay)))
-
-(add-hook 'kill-buffer-hook 'gud-kill-buffer)
-
 ;;;;
 ;;;; Org mode
 ;;;;
 (require 'org)
 (add-hook 'org-mode-hook '(lambda ()
-                            (local-unset-key (kbd "C-j"))))
-
+                            (local-unset-key (kbd "C-j"))
+                            (hl-line-mode)))
+;;;;
+;;;; Remember
+;;;;
+(define-key global-map "\C-cr" 'remember)
+(define-key global-map "\C-cR" 'remember-region)
+;;;;
+;;;; google translate
+;;;;
+(setq google-translate-default-target-language "ru")
 ;;;;
 ;;;; default frame parameters
 ;;;;
@@ -446,32 +380,26 @@
 ;; (pp (frame-parameters (car (frame-list))))
 ;; (frame-width (selected-frame))
 ;; (frame-height (selected-frame))
+;;
+;; menlo, 28:  83x27 fullscreen: 23.12.2016 28.07.2014
+;; menlo, 27:  88x28 fullscreen: 05.08.2014
+;; menlo, 26:  88x28 fullscreen: 01.09.2014
+;; menlo, 25:  93x30 fullscreen: 01.10.2014
+;; menlo, 24:  99x32 fullscreen: 31.10.2014
+;; menlo, 23:  99x34 fullscreen: 03.12.2014
+;; menlo, 22: 108x35 fullscreen: 30.01.2015
+;; menlo, 20: 117x37 fullscreen: 04.03.2015
+;; menlo, 19: 128x40 fullscreen: 18.05.2015
+;; menlo, 17: 141x44 fullscreen: 18.11.2015
+;;
 (add-to-list 'default-frame-alist '(cursor-type . bar))
-(add-to-list 'default-frame-alist '(fullscreen . fullheight))
-;(add-to-list 'initial-frame-alist '(fullscreen . fullheight))
-;;
-;; menlo, 28: 83x27 fullscreen: 28.07.2014
-;; menlo, 27: 88x28 fullscreen: 05.08.2014
-;; menlo, 26: 88x28 fullscreen: 01.09.2014
-;; menlo, 25: 93x30 fullscreen: 01.10.2014
-;;
-(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-25-*-*-*-m-0-iso10646-1"))
-(add-to-list 'initial-frame-alist '(mode . dark))
-(add-to-list 'initial-frame-alist '(background-color . "black"))
-(add-to-list 'initial-frame-alist '(foreground-color . "gray85"))
-(add-to-list 'initial-frame-alist '(cursor-color . "white"))
-
-;-;(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
-;-;(add-to-list 'initial-frame-alist '(width . 160))
-;-;(add-to-list 'initial-frame-alist '(height . 56))
-;(add-to-list 'initial-frame-alist '(top . 22))
-;(add-to-list 'initial-frame-alist '(left . 110))
-
-(require 'speedbar)
-(add-to-list 'speedbar-frame-parameters '(background-color . "grey"))
+;;(add-to-list 'default-frame-alist '(background-mode . dark))
+;;(add-to-list 'default-frame-alist '(cursor-color . "white"))
+(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-15-*-*-*-m-0-iso10646-1"))
+;(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-13-*-*-*-m-0-iso10646-1"))
 
 ;; fix problem with incorrect russian font selection, without this line
-;; for russian letters used some other proportional font
+;; emacs uses some other proportional font for russian letters
 ;; OS X specific
 (set-fontset-font "fontset-default" '(#x0000 . #xFFFFF) '("Menlo" . "unicode-bmp"))
 
@@ -503,18 +431,41 @@ If buffer with name NAME exists, then switch to it."
              (set-buffer temp-buffer)
              (cd (expand-file-name work-dir))
              (shell name)
-             (kill-buffer temp-buffer))))))
-
+             (kill-buffer temp-buffer))))
+    (delete-other-windows)))
 ;(global-unset-key [?\s-3])
 ;(global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "test" "/tmp")))
+
+
+;;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/pdf-tools")
+;;(setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+;;(require 'pdf-tools)
+;;(require 'pdf-occur)
+;;(require 'pdf-outline)
+;;(pdf-tools-install)
+;;
 
 ;;;;
 ;;;; Ruby
 ;;;;
-(add-hook 'inf-ruby-mode-hook '(lambda ()
-                                 (setq comint-process-echoes t)))
-(add-hook 'ruby-mode-hook '(lambda () (add-hook 'local-write-file-hooks
-                                                'delete-trailing-whitespace)))
+(eval-after-load "ruby-mode"
+  '(progn
+     (add-hook 'inf-ruby-mode-hook '(lambda () (setq comint-process-echoes t)))
+     (add-hook 'ruby-mode-hook '(lambda () (add-hook 'local-write-file-hooks
+                                                     'delete-trailing-whitespace)))
+     (define-key ruby-mode-map "\C-c\C-c" 'comment-or-uncomment-region)))
+(add-to-list 'ff-special-constructs 
+    '("^require_relative '\\(.*\.rb\\)'" .
+      (lambda ()
+        (buffer-substring (match-beginning 1) (match-end 1)))))
+
+
+;  (add-to-list 'load-path "/path/to/dash-at-point")
+;  (autoload 'dash-at-point "dash-at-point"
+;            "Search the word at point with Dash." t nil)
+(global-set-key "\C-cs" 'dash-at-point)
+(global-set-key "\C-cl" 'dash-at-point-with-docset)
+
 
 ;;;;
 ;;;; Global keybindings
@@ -547,6 +498,7 @@ If buffer with name NAME exists, then switch to it."
 (global-set-key [s-f3]            (lambda () (interactive) (kill-buffer (current-buffer))))
 (global-set-key [home]            'beginning-of-buffer)
 (global-set-key [end]             'end-of-buffer)
+;(global-set-key [?\s-down]        'beginning-of-buffer)
 (global-set-key [?\C-.]           'pop-tag-mark)
 (global-set-key [C-left]          'backward-word)
 (global-set-key [C-right]         'forward-word)
@@ -555,12 +507,13 @@ If buffer with name NAME exists, then switch to it."
 (global-set-key [delete]          'delete-char)          ; for X
 (global-set-key "\C-x\C-b"        'buffer-menu)
 (global-set-key "\C-x\C-d"        'dired)
-(global-set-key "\C-cd"           'dictionary-search)
+(global-set-key "\C-cd"           'google-translate-at-point) ;'dictionary-search)
 (global-set-key [?\s-0]           'buffer-menu)
 (global-set-key "\C-ch"           'hide-lines)
 (global-set-key "\C-x\C-\\"       'goto-last-change)
 (global-set-key (kbd "C-c g")     'google-word-at-point)
 (global-set-key [?\s-v]           'scroll-up-command)
+(global-set-key "\C-hy"           'yari)
 
 ;;;;
 ;;;; Modes specific keybindings
@@ -582,17 +535,23 @@ If buffer with name NAME exists, then switch to it."
 
 ;;;;
 ;;;; Save frequently visited files in registers or assign then to quick keys
-;;;; 
 ;;;;
 (global-set-key  (kbd "C-j") 'jump-to-register)
+(set-register ?a (cons 'file "~/Library/Containers/com.amazon.Kindle/Data/Library/Application Support/Kindle/My Kindle Content"))
 (set-register ?d (cons 'file "~/Downloads"))
 (set-register ?e (cons 'file "~/.emacs"))
 (set-register ?h (cons 'file "~/"))
-(set-register ?t (cons 'file "/tmp"))
+(set-register ?n (cons 'file "~/lib/personal/notes"))
+(set-register ?t (cons 'file "~/tmp"))
 (global-set-key [?\s-1] (lambda () (interactive) (jump-to-register ?h)))
-(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "ndk" "~/src/ndk/platform/ndk")))
-(global-set-key [?\s-5] (lambda () (interactive) (open-create-named-shell-buffer "ndk-test" "~/src/ndk-test")))
-(global-set-key [?\s-8] (lambda () (interactive) (run-ruby)))
+(global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "crew" "~/src/ndk/crew")))
+(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "ndk" "~/src/ndk")))
+(global-set-key [?\s-5] (lambda () (interactive) (ssh "neon") (delete-other-windows)))
+(global-set-key [?\s-6] (lambda () (interactive) (ssh "eriador") (delete-other-windows)))
+(global-set-key [?\s-7] (lambda () (interactive) (ssh "durthang") (delete-other-windows)))
+(global-set-key [?\s-8] (lambda () (interactive) (inf-ruby) (delete-other-windows)))
+;;(global-set-key [?\s-5] (lambda () (interactive) (open-create-named-shell-buffer "crew" "~/src/ndk/platform/ndk/crew")))
+;;(global-unset-key [?\s-7])
 ;;> 
 ;;> (set-register ?a (cons 'file "/sudo::/etc/apt/sources.list"))
 ;;> (set-register ?c (cons 'file "~/.irssi/config"))
@@ -630,7 +589,7 @@ If buffer with name NAME exists, then switch to it."
 ;;;;
 ;;;; Insidious Big Brother Database (bbdb)
 ;;;;
-(require 'bbdb)
+;;(require 'bbdb)
 ;(setq bbdb-file "~/lib/personal/bbdb"
 ;      bbdb-north-american-phone-numbers-p nil
 ;      bbdb-no-duplicates-p t
@@ -754,26 +713,50 @@ maybe accessed via the corresponding tramp method."
      (setq tetris-score-file "/Users/zuav/lib/personal/tetris-scores")))
 
 
+;; S=s165:U=1149da2:E=1513a341a2c:C=149e282ead8:P=1cd:A=en-devtoken:V=2:H=db58fd0407b7fac45edf787467962bdb
+;; org-tags-column: 115 for monokai, 140 for default theme
+;; hl-line background  for monokai: "#3E3D31"
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(Buffer-menu-name-width 28)
+ '(ansi-color-names-vector
+   ["#272822" "#F92672" "#A6E22E" "#E6DB74" "#66D9EF" "#FD5FF0" "#A1EFE4" "#F8F8F2"])
  '(auth-source-save-behavior nil)
  '(calendar-date-style (quote european))
- '(calendar-day-abbrev-array ["Вс" "Пн" "Вт" "Чт" "Пт" "Сб" "Вс"])
- '(calendar-day-name-array ["Воскресенье" "Понедельник" "Вторник" "Среда" "Четверг" "Пятница" "Суббота"])
- '(calendar-month-abbrev-array ["Янв" "Фев" "Мар" "Апр" "Май" "Июн" "Июл" "Авг" "Сен" "Окт" "Ноя" "Дек"])
- '(calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" "Июнь" "Июль" "Август" "Сентябрь" "Октябрь" "Ноябрь" "Декабрь"])
  '(calendar-week-start-day 1)
  '(canlock-password "b600beba9651f7c871f347668e74849f7fc7b8fb")
  '(column-number-mode t)
- '(custom-safe-themes (quote ("57f8801351e8b7677923c9fe547f7e19f38c99b80d68c34da6fa9b94dc6d3297" "0e3c610358b5a20468b9e5598997407754033d27fb87a6cbbc26450275bd0219" "bd115791a5ac6058164193164fd1245ac9dc97207783eae036f0bfc9ad9670e0" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(compilation-message-face (quote default))
+ '(custom-safe-themes
+   (quote
+    ("08b8807d23c290c840bbb14614a83878529359eaba1805618b3be7d61b0b0a32" "c7a9a68bd07e38620a5508fef62ec079d274475c8f92d75ed0c33c45fbe306bc" "1dffeecd1565d04cd2059234e872cd80fcbe813488602d5c42b5c9e576924d9f" "f81a9aabc6a70441e4a742dfd6d10b2bae1088830dc7aba9c9922f4b1bd2ba50" "1160f5fc215738551fce39a67b2bcf312ed07ef3568d15d53c87baa4fd1f4d4e" "a800120841da457aa2f86b98fb9fd8df8ba682cebde033d7dbf8077c1b7d677a" "557c283f4f9d461f897b8cac5329f1f39fac785aa684b78949ff329c33f947ec" "1fc1fdf975c8c8c3767c29787a063eee50cbceef903644a0771fa66568ee8777" "c567c85efdb584afa78a1e45a6ca475f5b55f642dfcd6277050043a568d1ac6f" "70b51a849b665f50a97a028c44cec36b398398357d8f7c19d558fe832b91980f" "c59857e3e950131e0c17c65711f1812d20a54b829115b7c522672ae6ba0864cc" "6df30cfb75df80e5808ac1557d5cc728746c8dbc9bc726de35b15180fa6e0ad9" "1e3b2c9e7e84bb886739604eae91a9afbdfb2e269936ec5dd4a9d3b7a943af7f" "6c62b1cd715d26eb5aa53843ed9a54fc2b0d7c5e0f5118d4efafa13d7715c56e" "38ba6a938d67a452aeb1dada9d7cdeca4d9f18114e9fc8ed2b972573138d4664" "0fb6369323495c40b31820ec59167ac4c40773c3b952c264dd8651a3b704f6b5" "a1289424bbc0e9f9877aa2c9a03c7dfd2835ea51d8781a0bf9e2415101f70a7e" "4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "196cc00960232cfc7e74f4e95a94a5977cb16fd28ba7282195338f68c84058ec" "30b7087fdd149a523aa614568dc6bacfab884145f4a67d64c80d6011d4c90837" "cd2a93d7b63aff07b3565c1c95e461cb880f0b00d8dd6cdd10fa8ece01ffcfdf" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" "3ed645b3c08080a43a2a15e5768b893c27f6a02ca3282576e3bc09f3d9fa3aaa" "05c3bc4eb1219953a4f182e10de1f7466d28987f48d647c01f1f0037ff35ab9a" "4e262566c3d57706c70e403d440146a5440de056dfaeb3062f004da1711d83fc" "5d9351cd410bff7119978f8e69e4315fd1339aa7b3af6d398c5ca6fac7fd53c7" "57f8801351e8b7677923c9fe547f7e19f38c99b80d68c34da6fa9b94dc6d3297" "0e3c610358b5a20468b9e5598997407754033d27fb87a6cbbc26450275bd0219" "bd115791a5ac6058164193164fd1245ac9dc97207783eae036f0bfc9ad9670e0" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(fci-rule-color "#3C3D37")
+ '(fringe-mode nil nil (fringe))
+ '(global-magit-file-mode t)
+ '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
+ '(highlight-tail-colors
+   (quote
+    (("#3C3D37" . 0)
+     ("#679A01" . 20)
+     ("#4BBEAE" . 30)
+     ("#1DB4D0" . 50)
+     ("#9A8F21" . 60)
+     ("#A75B00" . 70)
+     ("#F309DF" . 85)
+     ("#3C3D37" . 100))))
  '(ispell-dictionary "english")
  '(ispell-program-name "aspell")
- '(jabber-account-list (quote (("zuav@jabber.ru" (:connection-type . starttls)) ("zuav@crystax.net" (:connection-type . network)) ("alexander.zhuckov@gmail.com" (:connection-type . starttls)))))
- '(jabber-alert-message-hooks (quote (jabber-message-scroll)))
+ '(jabber-account-list
+   (quote
+    (("zuav@jabber.ru"
+      (:connection-type . starttls))
+     ("zuav@crystax.net"
+      (:connection-type . starttls)))))
+ '(jabber-alert-message-hooks (quote (jabber-message-scroll)) t)
  '(jabber-alert-presence-hooks nil)
  '(jabber-auto-reconnect t)
  '(jabber-backlog-days 365.0)
@@ -782,22 +765,57 @@ maybe accessed via the corresponding tramp method."
  '(jabber-connection-ssl-program nil)
  '(jabber-history-enabled t)
  '(jabber-roster-line-format " %c %-30n %u %-8s  %S")
- '(jabber-roster-show-bindings t)
+ '(jabber-roster-show-bindings nil)
  '(jabber-roster-show-title nil)
  '(jabber-use-global-history nil)
  '(monokai-distinct-fringe-background t)
  '(monokai-high-contrast-mode-line nil)
  '(monokai-use-variable-pitch nil)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1) ((control)))))
+ '(org-directory "~/lib/org")
+ '(org-tags-column 115)
+ '(package-selected-packages
+   (quote
+    (swift3-mode yaml-mode yari tablist ssh monokai-theme markdown-mode magit let-alist inf-ruby hide-lines haskell-mode google-translate go-mode exec-path-from-shell elixir-mode dash-at-point d-mode bm bison-mode bbdb bar-cursor atom-one-dark-theme atom-dark-theme)))
  '(ping-program-options (quote ("-c 8")))
+ '(pos-tip-background-color "#A6E22E")
+ '(pos-tip-foreground-color "#272822")
  '(show-paren-mode t)
  '(size-indication-mode t)
- '(speedbar-supported-extension-expressions (quote (".org" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".js" ".f\\(90\\|77\\|or\\)?" ".ad[abs]" ".p[lm]" ".tcl" ".m" ".scm" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".[he]rl")))
- '(sr-speedbar-delete-windows t)
- '(sr-speedbar-right-side t)
- '(sr-speedbar-skip-other-window-p t)
- '(sr-speedbar-width-x 42)
- '(vc-follow-symlinks t))
+ '(speedbar-show-unknown-files t)
+ '(speedbar-supported-extension-expressions
+   (quote
+    (".org" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".js" ".f\\(90\\|77\\|or\\)?" ".ad[abs]" ".p[lm]" ".tcl" ".m" ".scm" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".[he]rl")))
+ '(sr-speedbar-right-side nil)
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#F92672")
+     (40 . "#CF4F1F")
+     (60 . "#C26C0F")
+     (80 . "#E6DB74")
+     (100 . "#AB8C00")
+     (120 . "#A18F00")
+     (140 . "#989200")
+     (160 . "#8E9500")
+     (180 . "#A6E22E")
+     (200 . "#729A1E")
+     (220 . "#609C3C")
+     (240 . "#4E9D5B")
+     (260 . "#3C9F79")
+     (280 . "#A1EFE4")
+     (300 . "#299BA6")
+     (320 . "#2896B5")
+     (340 . "#2790C3")
+     (360 . "#66D9EF"))))
+ '(vc-annotate-very-old-color nil)
+ '(vc-follow-symlinks t)
+ '(weechat-color-list
+   (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
+
+;; '(org-tags-column 115)
+;; '(org-tags-column 140)
+
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -809,4 +827,5 @@ maybe accessed via the corresponding tramp method."
 (savehist-load)
 
 (server-start)
+(load-theme 'monokai t)
 ;;;; .emacs ends 
