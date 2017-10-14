@@ -32,8 +32,8 @@
   (exec-path-from-shell-copy-env "ANDROID_SDK")
   (exec-path-from-shell-copy-env "ANDROID_HOME")
   (exec-path-from-shell-copy-env "ANDROID_SDK_ROOT")
-  (exec-path-from-shell-copy-env "CREW_DEVEL_URL")
-  (exec-path-from-shell-copy-env "CREW_DEVEL_BRANCH")
+  (exec-path-from-shell-copy-env "CREW_SRC_CACHE_DIR")
+  (exec-path-from-shell-copy-env "CREW_PKG_CACHE_DIR")
   (exec-path-from-shell-copy-env "CREW_DOWNLOAD_BASE")
   (exec-path-from-shell-copy-env "CREW_NDK_DIR")
   (exec-path-from-shell-copy-env "CRYSTAX_NDK_BASE_TMP_DIR")
@@ -176,6 +176,9 @@
 ;; /sudo:root@eriador:/etc
 (add-to-list 'warning-suppress-types '(undo discard-info))
 (set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
+(add-to-list 'tramp-connection-properties (list (regexp-quote "/ssh:zuav@eriador:") "locale" "LC_COLLATE=C"))
+(add-to-list 'tramp-connection-properties (list (regexp-quote "/ssh:zuav@neon:")    "locale" "LC_COLLATE=C"))
+(add-to-list 'tramp-connection-properties (list (regexp-quote "/ssh:zuav@radon:")   "locale" "LC_COLLATE=C"))
 
 ;;;;
 ;;;; doc-view
@@ -203,7 +206,7 @@
 ;;;;
 ;;;; Erlang includes, erlang mode
 ;;;;
-(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.9.1/emacs")
+(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.11/emacs")
 (setq erlang-root-dir "/usr/local/lib/erlang")
 (require 'erlang-start)
 (setq inferior-erlang-display-buffer-any-frame t
@@ -533,6 +536,22 @@ If buffer with name NAME exists, then switch to it."
 (define-key outline-mode-map [C--] 'hide-subtree)
 (define-key outline-mode-map [C-=] 'show-entry)
 
+
+;;;
+;;; Remote hosts
+;;;
+(defun neon()    (interactive) (ssh "neon")    (delete-other-windows))
+(defun radon()   (interactive) (ssh "radon")   (delete-other-windows))
+(defun xenon()   (interactive) (ssh "xenon")   (delete-other-windows))
+(defun carbon()  (interactive) (ssh "carbon")  (delete-other-windows))
+(defun krypton() (interactive) (ssh "krypton") (delete-other-windows))
+(defun sulphur() (interactive) (ssh "sulphur") (delete-other-windows))
+(defun cobalt()  (interactive) (ssh "cobalt")  (delete-other-windows))
+;
+;
+(defun eriador()  (interactive) (ssh "eriador")  (delete-other-windows))
+(defun durthang() (interactive) (ssh "durthang") (delete-other-windows))
+
 ;;;;
 ;;;; Save frequently visited files in registers or assign then to quick keys
 ;;;;
@@ -544,11 +563,12 @@ If buffer with name NAME exists, then switch to it."
 (set-register ?n (cons 'file "~/lib/personal/notes"))
 (set-register ?t (cons 'file "~/tmp"))
 (global-set-key [?\s-1] (lambda () (interactive) (jump-to-register ?h)))
+(global-set-key [?\s-2] (lambda () (interactive) (open-create-named-shell-buffer "staging" "~/crystax-ndk/staging")))
 (global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "crew" "~/src/ndk/crew")))
 (global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "ndk" "~/src/ndk")))
-(global-set-key [?\s-5] (lambda () (interactive) (ssh "neon") (delete-other-windows)))
-(global-set-key [?\s-6] (lambda () (interactive) (ssh "eriador") (delete-other-windows)))
-(global-set-key [?\s-7] (lambda () (interactive) (ssh "durthang") (delete-other-windows)))
+(global-set-key [?\s-5] (lambda () (interactive) (neon)))
+(global-set-key [?\s-6] (lambda () (interactive) (radon)))
+(global-set-key [?\s-7] (lambda () (interactive) (eriador)))
 (global-set-key [?\s-8] (lambda () (interactive) (inf-ruby) (delete-other-windows)))
 ;;(global-set-key [?\s-5] (lambda () (interactive) (open-create-named-shell-buffer "crew" "~/src/ndk/platform/ndk/crew")))
 ;;(global-unset-key [?\s-7])
@@ -733,7 +753,7 @@ maybe accessed via the corresponding tramp method."
  '(compilation-message-face (quote default))
  '(custom-safe-themes
    (quote
-    ("08b8807d23c290c840bbb14614a83878529359eaba1805618b3be7d61b0b0a32" "c7a9a68bd07e38620a5508fef62ec079d274475c8f92d75ed0c33c45fbe306bc" "1dffeecd1565d04cd2059234e872cd80fcbe813488602d5c42b5c9e576924d9f" "f81a9aabc6a70441e4a742dfd6d10b2bae1088830dc7aba9c9922f4b1bd2ba50" "1160f5fc215738551fce39a67b2bcf312ed07ef3568d15d53c87baa4fd1f4d4e" "a800120841da457aa2f86b98fb9fd8df8ba682cebde033d7dbf8077c1b7d677a" "557c283f4f9d461f897b8cac5329f1f39fac785aa684b78949ff329c33f947ec" "1fc1fdf975c8c8c3767c29787a063eee50cbceef903644a0771fa66568ee8777" "c567c85efdb584afa78a1e45a6ca475f5b55f642dfcd6277050043a568d1ac6f" "70b51a849b665f50a97a028c44cec36b398398357d8f7c19d558fe832b91980f" "c59857e3e950131e0c17c65711f1812d20a54b829115b7c522672ae6ba0864cc" "6df30cfb75df80e5808ac1557d5cc728746c8dbc9bc726de35b15180fa6e0ad9" "1e3b2c9e7e84bb886739604eae91a9afbdfb2e269936ec5dd4a9d3b7a943af7f" "6c62b1cd715d26eb5aa53843ed9a54fc2b0d7c5e0f5118d4efafa13d7715c56e" "38ba6a938d67a452aeb1dada9d7cdeca4d9f18114e9fc8ed2b972573138d4664" "0fb6369323495c40b31820ec59167ac4c40773c3b952c264dd8651a3b704f6b5" "a1289424bbc0e9f9877aa2c9a03c7dfd2835ea51d8781a0bf9e2415101f70a7e" "4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "196cc00960232cfc7e74f4e95a94a5977cb16fd28ba7282195338f68c84058ec" "30b7087fdd149a523aa614568dc6bacfab884145f4a67d64c80d6011d4c90837" "cd2a93d7b63aff07b3565c1c95e461cb880f0b00d8dd6cdd10fa8ece01ffcfdf" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" "3ed645b3c08080a43a2a15e5768b893c27f6a02ca3282576e3bc09f3d9fa3aaa" "05c3bc4eb1219953a4f182e10de1f7466d28987f48d647c01f1f0037ff35ab9a" "4e262566c3d57706c70e403d440146a5440de056dfaeb3062f004da1711d83fc" "5d9351cd410bff7119978f8e69e4315fd1339aa7b3af6d398c5ca6fac7fd53c7" "57f8801351e8b7677923c9fe547f7e19f38c99b80d68c34da6fa9b94dc6d3297" "0e3c610358b5a20468b9e5598997407754033d27fb87a6cbbc26450275bd0219" "bd115791a5ac6058164193164fd1245ac9dc97207783eae036f0bfc9ad9670e0" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+    ("3629b62a41f2e5f84006ff14a2247e679745896b5eaa1d5bcfbc904a3441b0cd" "9492cf1ac00c8a1f7130a867a97404dfeb6727801c6b2b40b853b91543f7af67" "f78de13274781fbb6b01afd43327a4535438ebaeec91d93ebdbba1e3fba34d3c" "08b8807d23c290c840bbb14614a83878529359eaba1805618b3be7d61b0b0a32" "c7a9a68bd07e38620a5508fef62ec079d274475c8f92d75ed0c33c45fbe306bc" "1dffeecd1565d04cd2059234e872cd80fcbe813488602d5c42b5c9e576924d9f" "f81a9aabc6a70441e4a742dfd6d10b2bae1088830dc7aba9c9922f4b1bd2ba50" "1160f5fc215738551fce39a67b2bcf312ed07ef3568d15d53c87baa4fd1f4d4e" "a800120841da457aa2f86b98fb9fd8df8ba682cebde033d7dbf8077c1b7d677a" "557c283f4f9d461f897b8cac5329f1f39fac785aa684b78949ff329c33f947ec" "1fc1fdf975c8c8c3767c29787a063eee50cbceef903644a0771fa66568ee8777" "c567c85efdb584afa78a1e45a6ca475f5b55f642dfcd6277050043a568d1ac6f" "70b51a849b665f50a97a028c44cec36b398398357d8f7c19d558fe832b91980f" "c59857e3e950131e0c17c65711f1812d20a54b829115b7c522672ae6ba0864cc" "6df30cfb75df80e5808ac1557d5cc728746c8dbc9bc726de35b15180fa6e0ad9" "1e3b2c9e7e84bb886739604eae91a9afbdfb2e269936ec5dd4a9d3b7a943af7f" "6c62b1cd715d26eb5aa53843ed9a54fc2b0d7c5e0f5118d4efafa13d7715c56e" "38ba6a938d67a452aeb1dada9d7cdeca4d9f18114e9fc8ed2b972573138d4664" "0fb6369323495c40b31820ec59167ac4c40773c3b952c264dd8651a3b704f6b5" "a1289424bbc0e9f9877aa2c9a03c7dfd2835ea51d8781a0bf9e2415101f70a7e" "4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "196cc00960232cfc7e74f4e95a94a5977cb16fd28ba7282195338f68c84058ec" "30b7087fdd149a523aa614568dc6bacfab884145f4a67d64c80d6011d4c90837" "cd2a93d7b63aff07b3565c1c95e461cb880f0b00d8dd6cdd10fa8ece01ffcfdf" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" "3ed645b3c08080a43a2a15e5768b893c27f6a02ca3282576e3bc09f3d9fa3aaa" "05c3bc4eb1219953a4f182e10de1f7466d28987f48d647c01f1f0037ff35ab9a" "4e262566c3d57706c70e403d440146a5440de056dfaeb3062f004da1711d83fc" "5d9351cd410bff7119978f8e69e4315fd1339aa7b3af6d398c5ca6fac7fd53c7" "57f8801351e8b7677923c9fe547f7e19f38c99b80d68c34da6fa9b94dc6d3297" "0e3c610358b5a20468b9e5598997407754033d27fb87a6cbbc26450275bd0219" "bd115791a5ac6058164193164fd1245ac9dc97207783eae036f0bfc9ad9670e0" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(fci-rule-color "#3C3D37")
  '(fringe-mode nil nil (fringe))
  '(global-magit-file-mode t)
@@ -750,33 +770,35 @@ maybe accessed via the corresponding tramp method."
      ("#3C3D37" . 100))))
  '(ispell-dictionary "english")
  '(ispell-program-name "aspell")
- '(jabber-account-list
-   (quote
-    (("zuav@jabber.ru"
-      (:connection-type . starttls))
-     ("zuav@crystax.net"
-      (:connection-type . starttls)))))
- '(jabber-alert-message-hooks (quote (jabber-message-scroll)) t)
- '(jabber-alert-presence-hooks nil)
- '(jabber-auto-reconnect t)
- '(jabber-backlog-days 365.0)
- '(jabber-backlog-number 1000)
- '(jabber-chat-fill-long-lines nil)
- '(jabber-connection-ssl-program nil)
- '(jabber-history-enabled t)
- '(jabber-roster-line-format " %c %-30n %u %-8s  %S")
- '(jabber-roster-show-bindings nil)
- '(jabber-roster-show-title nil)
- '(jabber-use-global-history nil)
+;-; '(jabber-account-list
+;-;   (quote
+;-;    (("zuav@jabber.ru"
+;-;      (:connection-type . starttls))
+;-;     ("zuav@crystax.net"
+;-;      (:connection-type . starttls)))))
+;-; '(jabber-alert-message-hooks (quote (jabber-message-scroll)) t)
+;-; '(jabber-alert-presence-hooks nil)
+;-; '(jabber-auto-reconnect t)
+;-; '(jabber-backlog-days 365.0)
+;-; '(jabber-backlog-number 1000)
+;-; '(jabber-chat-fill-long-lines nil)
+;-; '(jabber-connection-ssl-program nil)
+;-; '(jabber-history-enabled t)
+;-; '(jabber-roster-line-format " %c %-30n %u %-8s  %S")
+;-; '(jabber-roster-show-bindings nil)
+;-; '(jabber-roster-show-title nil)
+;-; '(jabber-use-global-history nil)
+ '(magit-diff-use-overlays nil)
+ '(markdown-fontify-code-blocks-natively t)
  '(monokai-distinct-fringe-background t)
  '(monokai-high-contrast-mode-line nil)
  '(monokai-use-variable-pitch nil)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1) ((control)))))
  '(org-directory "~/lib/org")
- '(org-tags-column 115)
+ '(org-tags-column 140)
  '(package-selected-packages
    (quote
-    (swift3-mode yaml-mode yari tablist ssh monokai-theme markdown-mode magit let-alist inf-ruby hide-lines haskell-mode google-translate go-mode exec-path-from-shell elixir-mode dash-at-point d-mode bm bison-mode bbdb bar-cursor atom-one-dark-theme atom-dark-theme)))
+    (cmake-mode coffee-mode eruby-mode magit swift3-mode yaml-mode yari tablist ssh monokai-theme markdown-mode let-alist inf-ruby hide-lines haskell-mode google-translate go-mode exec-path-from-shell elixir-mode dash-at-point d-mode bm bison-mode bbdb bar-cursor atom-one-dark-theme atom-dark-theme)))
  '(ping-program-options (quote ("-c 8")))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
@@ -813,19 +835,20 @@ maybe accessed via the corresponding tramp method."
  '(weechat-color-list
    (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
 
-;; '(org-tags-column 115)
-;; '(org-tags-column 140)
+;; (setq org-tags-column 115)
+;; (setq org-tags-column 140)
 
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
+;-; (custom-set-faces
+;-;  ;; custom-set-faces was added by Custom.
+;-;  ;; If you edit it by hand, you could mess it up, so be careful.
+;-;  ;; Your init file should contain only one such instance.
+;-;  ;; If there is more than one, they won't work right.
+;-;  '(eruby-standard-face ((t (:background "gray25"))))
+;-;  '(markdown-code-face ((t (:inherit fixed-pitch :background "gray30")))))
+;-; 
 (savehist-load)
 
 (server-start)
-(load-theme 'monokai t)
+;(load-theme 'monokai t)
 ;;;; .emacs ends 
