@@ -1,0 +1,17 @@
+XTerm*font:        -unknown-Liberation Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1
+XTerm*saveLines:   10240
+
+!*VT100*foreground: gray85
+!*VT100*background: black
+*VT100*font:	   -unknown-Liberation Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1
+*VT100*font2:	   -unknown-Liberation Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1
+*VT100*font3:	   -unknown-Liberation Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1
+*VT100*font4:	   -unknown-Liberation Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1
+*VT100*font5:	   -unknown-Liberation Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1
+*VT100*font6:	   -unknown-Liberation Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1
+!*VT100*font:	   -monotype-courier new-medium-r-normal-*-20-*-*-*-*-*-koi8-ru
+!*VT100*font2:	   -monotype-courier new-medium-r-normal-*-20-*-*-*-*-*-koi8-ru
+!*VT100*font3:	   -monotype-courier new-medium-r-normal-*-20-*-*-*-*-*-koi8-ru
+!*VT100*font4:	   -monotype-courier new-medium-r-normal-*-20-*-*-*-*-*-koi8-ru
+!*VT100*font5:	   -monotype-courier new-medium-r-normal-*-20-*-*-*-*-*-koi8-ru
+!*VT100*font6:	   -monotype-courier new-medium-r-normal-*-20-*-*-*-*-*-koi8-ru
