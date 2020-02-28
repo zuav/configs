@@ -17,7 +17,7 @@
 ;;;
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
 
@@ -63,8 +63,9 @@
 (setq-default show-trailing-whitespace nil)
 (setq-default fill-column 72)
 (setq-default save-place t)
-(setq-default ssh-directory-tracking-mode t)
 ;;;;
+(setq x-meta-keysym 'super)
+(setq x-super-keysym 'meta)
 (setq split-width-threshold nil)		    ; always split windows vertically
 (setq default-indicate-empty-lines nil)
 (setq backup-by-copying t)
@@ -73,10 +74,10 @@
 (setq compilation-scroll-output t)
 (setq dired-chown-program      "/bin/chown"
       dired-auto-revert-buffer t)
-(setq user-mail-address             "zuav@crystax.net"
+(setq user-mail-address             "zuav@yandex.ru"
       send-mail-function            'smtpmail-send-it
       message-send-mail-function    'smtpmail-send-it
-      smtpmail-smtp-server          "smtp.crystax.net"
+      smtpmail-smtp-server          "smtp.yandex.ru"
       smtpmail-smtp-service         587
       smtpmail-stream-type          'starttls
       smtpmail-debug-info           nil
@@ -149,8 +150,7 @@
 (add-to-list 'warning-suppress-types '(undo discard-info))
 (set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
 (add-to-list 'tramp-connection-properties (list (regexp-quote "/ssh:zuav@eriador:") "locale" "LC_COLLATE=C"))
-(add-to-list 'tramp-connection-properties (list (regexp-quote "/ssh:zuav@neon:")    "locale" "LC_COLLATE=C"))
-(add-to-list 'tramp-connection-properties (list (regexp-quote "/ssh:zuav@radon:")   "locale" "LC_COLLATE=C"))
+
 
 ;;;;
 ;;;; doc-view
@@ -166,40 +166,37 @@
 (setq-default ff-search-directories
       '("."
         ".."
-        "/usr/include"
-        "/usr/include/c++/4.4/*"
-        "/opt/qtsdk-2010.05/qt/include/*"
         "../include"
-        "../../*/include"
-        "../src"
-        "../../*/src"
-        "/usr/local/lib/erlang/lib"))
+        "../cpp"
+        "../../main/include"
+        "/usr/include"
+        "/usr/include/c++/8/*"))
 
 ;;;;
 ;;;; Erlang includes, erlang mode
 ;;;;
-;;;;;;(add-to-list 'load-path "/usr/local/lib/erlang/lib/tools-2.11/emacs")
-;;;;;;(setq erlang-root-dir "/usr/local/lib/erlang")
-;;;;;;(require 'erlang-start)
-;;;;;;(setq inferior-erlang-display-buffer-any-frame t
-;;;;;;      inferior-erlang-machine-options          '("-sname" "emacs"))
-;;;;;;(require 'erlang)
-;;;;;;(defvar erlang-lib-dir (concat erlang-root-dir "/lib"))
-;;;;;;(defvar erlang-libs-names (directory-files erlang-lib-dir))
-;;;;;;;;
-;;;;;;(defun erlang-lib-versioned-name (libstr)
-;;;;;;  (let* ((parts (split-string libstr "/"))
-;;;;;;         (libname (car parts))
-;;;;;;         (verlibname)
-;;;;;;         (result))
-;;;;;;    (dolist (name erlang-libs-names result)
-;;;;;;      (when (string-match libname name)
-;;;;;;        (setq result (cons name result))))
-;;;;;;    (setq verlibname
-;;;;;;          (cond ((> (length result) 0) (car (nreverse result)))
-;;;;;;                (t libname)))
-;;;;;;    (mapconcat 'identity (cons verlibname (cdr parts)) "/")))
-;;;;;;;;
+(add-to-list 'load-path "/usr/lib/erlang/lib/tools-3.3/emacs")
+(setq erlang-root-dir "/usr/lib/erlang")
+(require 'erlang-start)
+(setq inferior-erlang-display-buffer-any-frame t
+      inferior-erlang-machine-options          '("-sname" "emacs"))
+(require 'erlang)
+(defvar erlang-lib-dir (concat erlang-root-dir "/lib"))
+(defvar erlang-libs-names (directory-files erlang-lib-dir))
+;;
+(defun erlang-lib-versioned-name (libstr)
+  (let* ((parts (split-string libstr "/"))
+         (libname (car parts))
+         (verlibname)
+         (result))
+    (dolist (name erlang-libs-names result)
+      (when (string-match libname name)
+        (setq result (cons name result))))
+    (setq verlibname
+          (cond ((> (length result) 0) (car (nreverse result)))
+                (t libname)))
+    (mapconcat 'identity (cons verlibname (cdr parts)) "/")))
+;;
 ;(erlang-lib-versioned-name "eunit/include/eunit.hrl")
 ;(erlang-lib-versioned-name "unit/include/eunit.hrl")
 ;;
@@ -353,8 +350,10 @@
 ;;;;
 ;; (pp (frame-parameters))
 ;; (pp (frame-parameters (car (frame-list))))
-;; (frame-width (selected-frame))
-;; (frame-height (selected-frame))
+;; (frame-width (selected-frame))  86
+;; (frame-height (selected-frame)) 25
+;;
+;; Liberation Mono, 37: 82x24 20.12.2019
 ;;
 ;; menlo, 28:  83x27 fullscreen: 23.12.2016 28.07.2014
 ;; menlo, 27:  88x28 fullscreen: 05.08.2014
@@ -370,8 +369,13 @@
 (add-to-list 'default-frame-alist '(cursor-type . bar))
 ;;(add-to-list 'default-frame-alist '(background-mode . dark))
 ;;(add-to-list 'default-frame-alist '(cursor-color . "white"))
-(add-to-list 'default-frame-alist '(font . "-unknown-Liberation Mono-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1"))
-;(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-13-*-*-*-m-0-iso10646-1"))
+;;(add-to-list 'default-frame-alist '(font . "-unknown-Liberation Mono-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1"))
+;(add-to-list 'default-frame-alist '(font . "-1ASC-Liberation Mono-normal-normal-normal-*-37-*-*-*-m-0-iso10646-1"))
+(add-to-list 'default-frame-alist '(font . "-1ASC-Liberation Mono-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1"))
+
+;;;(add-to-list 'default-frame-alist '(font . "-apple-Menlo-medium-normal-normal-*-18-*-*-*-m-0-iso10646-1"))
+
+;; -PfEd-DejaVu Sans-normal-normal-normal-*-*-*-*-*-*-0-iso10646-1 	
 
 ;; fix problem with incorrect russian font selection, without this line
 ;; emacs uses some other proportional font for russian letters
@@ -458,9 +462,9 @@ If buffer with name NAME exists, then switch to it."
 (global-set-key [f2]              (lambda () (interactive) (switch-to-buffer (other-buffer))))
 (global-set-key [f3]              (lambda () (interactive) (find-file (expand-file-name "~/lib/personal/todo.org"))))
 (global-set-key [f4]              'magit-status)
-(global-set-key [f5]              'gnus)
+;(global-set-key [f5]              'gnus)
 (global-set-key [f6]              'other-window)
-(global-set-key [f7]              'psed)
+(global-set-key [f7]              (lambda () (interactive) (proced) (delete-other-windows)))
 (global-set-key [f8]              'my-eval-current-buffer)
 (global-set-key [f9]              'compile)
 (global-set-key [f11]             (lambda () (interactive) (open-create-named-shell-buffer "*shell*")))
@@ -473,7 +477,7 @@ If buffer with name NAME exists, then switch to it."
 (global-set-key [s-f3]            (lambda () (interactive) (kill-buffer (current-buffer))))
 (global-set-key [home]            'beginning-of-buffer)
 (global-set-key [end]             'end-of-buffer)
-;(global-set-key [?\s-down]        'beginning-of-buffer)
+(global-set-key [s-tab]           'other-frame)
 (global-set-key [?\C-.]           'pop-tag-mark)
 (global-set-key [C-left]          'backward-word)
 (global-set-key [C-right]         'forward-word)
@@ -488,7 +492,9 @@ If buffer with name NAME exists, then switch to it."
 (global-set-key "\C-x\C-\\"       'goto-last-change)
 (global-set-key (kbd "C-c g")     'google-word-at-point)
 (global-set-key [?\s-v]           'scroll-up-command)
-(global-set-key "\C-hy"           'yari)
+;;(global-set-key "\C-hy"           'yari)
+(global-set-key [?\s-s]           'save-buffer)
+(global-set-key [?\s-l]           'goto-line)
 
 ;;;;
 ;;;; Modes specific keybindings
@@ -512,36 +518,33 @@ If buffer with name NAME exists, then switch to it."
 ;;;
 ;;; Remote hosts
 ;;;
-(defun norcass() (interactive) (ssh "azhukov@norcas.accessline.com") (delete-other-windows))
-;-;(defun radon()   (interactive) (ssh "radon")   (delete-other-windows))
-;-;(defun xenon()   (interactive) (ssh "xenon")   (delete-other-windows))
-;-;(defun carbon()  (interactive) (ssh "carbon")  (delete-other-windows))
-;-;(defun krypton() (interactive) (ssh "krypton") (delete-other-windows))
-;-;(defun sulphur() (interactive) (ssh "sulphur") (delete-other-windows))
-;-;(defun cobalt()  (interactive) (ssh "cobalt")  (delete-other-windows))
-;
-;
-;-;(defun eriador()  (interactive) (ssh "eriador")  (delete-other-windows))
-;-;(defun durthang() (interactive) (ssh "durthang") (delete-other-windows))
+(require 'nssh)
+(setq nssh-sudo nil)
+(defun norcas()   (interactive) (nssh "azhukov@norcas.accessline.com")         (delete-other-windows))
+(defun compile7() (interactive) (nssh "azhukov@compile7.accessline.com")       (delete-other-windows))
+;(defun ss1-dev()  (interactive) (nssh "accessline@ss1.dev.accessline.com")     (delete-other-windows))
+;(defun sbc10()    (interactive) (nssh "accessline@sbc10.lflab.accessline.com") (delete-other-windows))
 
 ;;;;
 ;;;; Save frequently visited files in registers or assign then to quick keys
 ;;;;
 (global-set-key  (kbd "C-j") 'jump-to-register)
-(set-register ?a (cons 'file "~/Library/Containers/com.amazon.Kindle/Data/Library/Application Support/Kindle/My Kindle Content"))
+;(set-register ?a (cons 'file "~/Library/Containers/com.amazon.Kindle/Data/Library/Application Support/Kindle/My Kindle Content"))
 (set-register ?d (cons 'file "~/Downloads"))
 (set-register ?e (cons 'file "~/.emacs"))
 (set-register ?h (cons 'file "~/"))
 (set-register ?n (cons 'file "~/lib/personal/notes"))
 (set-register ?t (cons 'file "~/tmp"))
 (global-set-key [?\s-1] (lambda () (interactive) (jump-to-register ?h)))
-(global-set-key [?\s-2] (lambda () (interactive) (open-create-named-shell-buffer "staging" "~/crystax-ndk/staging")))
-(global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "crew" "~/src/ndk/crew")))
-(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "ndk" "~/src/ndk")))
-(global-set-key [?\s-5] (lambda () (interactive) (neon)))
-(global-set-key [?\s-6] (lambda () (interactive) (radon)))
-(global-set-key [?\s-7] (lambda () (interactive) (eriador)))
-(global-set-key [?\s-8] (lambda () (interactive) (inf-ruby) (delete-other-windows)))
+(global-set-key [?\s-2] (lambda () (interactive) (compile7)))
+(global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "iSDK"       "~/src/VoiceCore/iSDK")))
+(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "SoftSwitch" "~/src/VoiceCore/SoftSwitch")))
+(global-set-key [?\s-5] (lambda () (interactive) (open-create-named-shell-buffer "SIP"        "~/src/VoiceCore/sip")))
+(global-set-key [?\s-6] (lambda () (interactive) (open-create-named-shell-buffer "VoiceCore"  "~/VoiceCore")))
+(global-set-key [?\s-7] (lambda () (interactive) (open-create-named-shell-buffer "ss1.dev"    "~/")))
+;(global-set-key [?\s-6] (lambda () (interactive) (radon)))
+;(global-set-key [?\s-7] (lambda () (interactive) (eriador)))
+;(global-set-key [?\s-8] (lambda () (interactive) (inf-ruby) (delete-other-windows)))
 ;;(global-set-key [?\s-5] (lambda () (interactive) (open-create-named-shell-buffer "crew" "~/src/ndk/platform/ndk/crew")))
 ;;(global-unset-key [?\s-7])
 ;;> 
@@ -744,15 +747,17 @@ maybe accessed via the corresponding tramp method."
  '(ispell-program-name "aspell")
  '(magit-diff-use-overlays nil)
  '(markdown-fontify-code-blocks-natively t)
+ '(midnight-mode t)
  '(monokai-distinct-fringe-background t)
  '(monokai-high-contrast-mode-line nil)
  '(monokai-use-variable-pitch nil)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1) ((control)))))
+ '(nxml-child-indent 4)
  '(org-directory "~/lib/org")
  '(org-tags-column 140)
  '(package-selected-packages
    (quote
-    (cmake-mode coffee-mode eruby-mode magit swift3-mode yaml-mode yari tablist ssh monokai-theme markdown-mode let-alist inf-ruby hide-lines haskell-mode google-translate go-mode exec-path-from-shell elixir-mode dash-at-point d-mode bm bison-mode bbdb bar-cursor atom-one-dark-theme atom-dark-theme)))
+    (ini-mode nssh cmake-mode coffee-mode eruby-mode magit swift3-mode yaml-mode yari tablist monokai-theme markdown-mode let-alist inf-ruby hide-lines haskell-mode google-translate go-mode exec-path-from-shell elixir-mode dash-at-point d-mode bm bison-mode bbdb bar-cursor atom-one-dark-theme atom-dark-theme)))
  '(ping-program-options (quote ("-c 8")))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
@@ -804,6 +809,7 @@ maybe accessed via the corresponding tramp method."
 (savehist-load)
 
 (server-start)
+;(semantic-mode 1)
 (load-theme 'monokai t)
 ;;;; .emacs ends 
 (custom-set-faces
