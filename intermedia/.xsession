@@ -3,6 +3,7 @@
 . ~/.environment
 
 ulimit -c unlimited
+ulimit -n 1048576
 
 xscreensaver &
 xset r rate 250 50
