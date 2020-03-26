@@ -1,0 +1,9 @@
+# -*- mode: Shell-script -*-
+
+LC_COLLATE=C
+GIT_PAGER=""
+EDITOR=emacsclient
+EMAIL="azhukov@intermedia.net"
+
+export LC_COLLATE GIT_PAGER EDITOR EMAIL
+
