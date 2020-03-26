@@ -1,16 +1,16 @@
 #!/bin/bash
 
-. /etc/environment
 . ~/.environment
 
 ulimit -c unlimited
+ulimit -n 1048576
 
-xscreensaver &
+xrandr --newmode "1920x1080_60.00"  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
+xrandr --addmode Virtual1 "1920x1080_60.00"
+xrandr --output Virtual1 --mode "1920x1080_60.00"
 xset r rate 250 50
 xsetroot -solid black 
-xbindkeys
-
-emacs -fs -fn "-unknown-Liberation Mono-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1" &
-
+xsetroot -cursor_name left_ptr
+setxkbmap -layout 'us,ru' -option 'grp:alt_shift_toggle,grp_led:scroll'
 
 exec ratpoison
