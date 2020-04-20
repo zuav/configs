@@ -84,6 +84,7 @@
       smtpmail-debug-verb           nil)
 (setq kill-whole-line t)
 (setq line-number-mode t)
+(setq column-number-mode t)
 (setq next-line-add-newlines nil)
 (setq next-screen-context-lines 1)
 (setq require-final-newline t)
@@ -141,6 +142,8 @@
 (windmove-default-keybindings)
 (display-time-mode 1)
 (global-hl-line-mode -1)
+(show-paren-mode 1)
+(midnight-mode 1)
 
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil                              t)
 (autoload 'hide-lines                    "hide-lines" "Hide lines based on a regexp"   t)
@@ -480,7 +483,7 @@ If buffer with name NAME exists, then switch to it."
 (global-set-key [?\s-1] (lambda () (interactive) (jump-to-register ?h)))
 (global-set-key [?\s-2] (lambda () (interactive) (compile7)))
 (global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "iSDK"       "~/src/VoiceCore/iSDK")))
-(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "SoftSwitch" "~/src/VoiceCore/SoftSwitch")))
+;(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "SoftSwitch" "~/src/VoiceCore/SoftSwitch")))
 (global-set-key [?\s-5] (lambda () (interactive) (ithilien)))
 (global-set-key [?\s-6] (lambda () (interactive) (open-create-named-shell-buffer "VoiceCore"  "~/VoiceCore")))
 (global-set-key [?\s-7] (lambda () (interactive) (open-create-named-shell-buffer "ss1.dev"    "~/")))
@@ -659,6 +662,7 @@ maybe accessed via the corresponding tramp method."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(nxml-child-indent 4)
  '(package-selected-packages (quote (bar-cursor bm magit monokai-theme nssh))))
 
 ;; (setq org-tags-column 115)
