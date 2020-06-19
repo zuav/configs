@@ -172,6 +172,8 @@
         "../include"
         "../cpp"
         "../../main/include"
+        "../../inc"
+        "../../src"
         "/usr/include"
         "/usr/include/c++/8/*"))
 
@@ -464,11 +466,12 @@ If buffer with name NAME exists, then switch to it."
 ;;;
 (require 'nssh)
 (setq nssh-sudo nil)
-(defun norcas()   (interactive) (nssh "azhukov@norcas.accessline.com")   (delete-other-windows))
-(defun compile7() (interactive) (nssh "azhukov@compile7.accessline.com") (delete-other-windows))
-(defun ithilien() (interactive) (nssh "10.9.3.217")                      (delete-other-windows))
-;(defun ss1-dev()  (interactive) (nssh "accessline@ss1.dev.accessline.com")     (delete-other-windows))
-;(defun sbc10()    (interactive) (nssh "accessline@sbc10.lflab.accessline.com") (delete-other-windows))
+(defun norcas()        (interactive) (nssh "azhukov@norcas.accessline.com")             (delete-other-windows))
+(defun compile7()      (interactive) (nssh "azhukov@compile7.accessline.com")           (delete-other-windows))
+(defun lab6()          (interactive) (nssh "azhukov@www2.lab6.accessline.com")          (delete-other-windows))
+(defun ithilien()      (interactive) (nssh "10.9.3.217")                                (delete-other-windows))
+(defun hpbx-dev-box()  (interactive) (nssh "azhukov@devhpbx019-1.vx.devintermedia.net") (delete-other-windows))
+(defun hpbx-dev-logs() (interactive) (nssh "azhukov@172.16.41.56")                      (delete-other-windows))
 
 ;;;;
 ;;;; Save frequently visited files in registers or assign then to quick keys
@@ -481,10 +484,10 @@ If buffer with name NAME exists, then switch to it."
 (set-register ?n (cons 'file "~/lib/personal/notes"))
 (set-register ?t (cons 'file "~/tmp"))
 (global-set-key [?\s-1] (lambda () (interactive) (jump-to-register ?h)))
-(global-set-key [?\s-2] (lambda () (interactive) (compile7)))
-(global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "iSDK"       "~/src/VoiceCore/iSDK")))
-;(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "SoftSwitch" "~/src/VoiceCore/SoftSwitch")))
-(global-set-key [?\s-5] (lambda () (interactive) (ithilien)))
+(global-set-key [?\s-2] (lambda () (interactive) (ithilien)))
+(global-set-key [?\s-3] (lambda () (interactive) (open-create-named-shell-buffer "VoiceCore.dev" "~/src/VoiceCore")))
+(global-set-key [?\s-4] (lambda () (interactive) (open-create-named-shell-buffer "HPBX.dev" "~/src/HPBX")))
+(global-set-key [?\s-5] (lambda () (interactive) (hpbx-dev-box)))
 (global-set-key [?\s-6] (lambda () (interactive) (open-create-named-shell-buffer "VoiceCore"  "~/VoiceCore")))
 (global-set-key [?\s-7] (lambda () (interactive) (open-create-named-shell-buffer "ss1.dev"    "~/")))
 ;(global-set-key [?\s-6] (lambda () (interactive) (radon)))
@@ -663,7 +666,9 @@ maybe accessed via the corresponding tramp method."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(nxml-child-indent 4)
- '(package-selected-packages (quote (bar-cursor bm magit monokai-theme nssh))))
+ '(package-selected-packages
+   (quote
+    (rfc-mode protobuf-mode bar-cursor bm magit monokai-theme nssh))))
 
 ;; (setq org-tags-column 115)
 ;; (setq org-tags-column 140)
@@ -681,7 +686,7 @@ maybe accessed via the corresponding tramp method."
 
 (server-start)
 ;(semantic-mode 1)
-(load-theme 'monokai t)
+;(load-theme 'monokai t)
 ;;;; .emacs ends 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

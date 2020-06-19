@@ -11,5 +11,6 @@ nextscreen
 set font Mono-16
 prevscreen
 alias emacs         exec emacs -fs
-alias firefox       exec firefox
 alias google-chrome exec google-chrome
+alias slack         exec slack
+alias linphone      exec /home/zuav/Downloads/Linphone-4.2.0-alpha.14+0d3c37b.AppImage

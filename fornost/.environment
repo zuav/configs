@@ -7,3 +7,7 @@ EMAIL="azhukov@intermedia.net"
 
 export LC_COLLATE GIT_PAGER EDITOR EMAIL
 
+export SPLIBS_ROOT=/home/zuav/src/HPBX/splibs
+export SPCOMMON_ROOT=/home/zuav/src/HPBX/spcommon
+export SPSERVER_ROOT=/home/zuav/src/HPBX/spserver
+export UMS_DEPLOY=/home/zuav/src/HPBX/build
