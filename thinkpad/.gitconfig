@@ -1,0 +1,14 @@
+[core]
+        pager = "cat"
+[color]
+	ui = auto
+[user]
+	name = Alexander Zhukov
+	email = azhukov@intermedia.net
+[push]
+	default = simple
+
+[merge]
+        renamelimit = 2200
+[fetch]
+	recursesubmodules = true
