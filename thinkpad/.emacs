@@ -144,6 +144,7 @@
 (global-hl-line-mode -1)
 (show-paren-mode 1)
 (midnight-mode 1)
+(savehist-mode 1)
 
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil                              t)
 (autoload 'hide-lines                    "hide-lines" "Hide lines based on a regexp"   t)
@@ -160,7 +161,7 @@
 ;;;;
 (require 'doc-view)
 (setq doc-view-cache-directory "/var/tmp/docview1000"
-      doc-view-resolution      4800)
+      doc-view-resolution      400)
 
 ;;;;
 ;;;; find-file settings
@@ -175,7 +176,57 @@
         "../../inc"
         "../../src"
         "/usr/include"
-        "/usr/include/c++/8/*"))
+        "/usr/include/c++/8/*"
+        "/opt/erlang/23.1.4/lib/erlang/lib"))
+
+;;;;
+;;;; Erlang includes, erlang mode
+;;;;
+(setq erlang-root-dir "/opt/erlang/23.1.4/lib/erlang")
+(defvar erlang-lib-dir (concat erlang-root-dir "/lib"))
+(add-to-list 'load-path (concat erlang-lib-dir "/tools-3.4.1/emacs"))
+(require 'erlang-start)
+(setq inferior-erlang-display-buffer-any-frame t
+      inferior-erlang-machine-options          '("-sname" "emacs"))
+(require 'erlang)
+(defvar erlang-libs-names (directory-files erlang-lib-dir))
+;;
+(defun erlang-lib-versioned-name (libstr)
+  (let* ((parts (split-string libstr "/"))
+         (libname (car parts))
+         (verlibname)
+         (result))
+    (dolist (name erlang-libs-names result)
+      (when (string-match libname name)
+        (setq result (cons name result))))
+    (setq verlibname
+          (cond ((> (length result) 0) (car (nreverse result)))
+                (t libname)))
+    (mapconcat 'identity (cons verlibname (cdr parts)) "/")))
+;;
+;(erlang-lib-versioned-name "eunit/include/eunit.hrl")
+;(erlang-lib-versioned-name "unit/include/eunit.hrl")
+;;
+(add-to-list 'ff-special-constructs 
+    '("^-include(\"\\(.*\\)\"" .
+      (lambda ()
+        (buffer-substring (match-beginning 1) (match-end 1)))))
+;;
+(add-to-list 'ff-special-constructs 
+    '("^-include_lib(\"\\(.*\\)\"" .
+      (lambda ()
+        (erlang-lib-versioned-name (buffer-substring (match-beginning 1) (match-end 1))))))
+;;
+(defvar erl-other-file-alist '(("\\.erl" (".hrl")) ("\\.hrl" (".erl"))))
+(add-hook 'erlang-mode-hook '(lambda ()
+                               (setq show-trailing-whitespace t
+                                     tab-width 4
+                                     comment-column      64
+                                     comment-fill-column 139)
+                               ;;
+                               (add-hook 'local-write-file-hooks 'delete-trailing-whitespace)
+                               ;;
+                               (setq ff-other-file-alist 'erl-other-file-alist)))
 
 ;;;;
 ;;;; Shell mode
@@ -291,6 +342,7 @@
 ;;;; google translate
 ;;;;
 (setq google-translate-default-target-language "ru")
+
 ;;;;
 ;;;; default frame parameters
 ;;;;
@@ -469,14 +521,16 @@ If buffer with name NAME exists, then switch to it."
 ;;;
 (require 'nssh)
 (setq nssh-sudo nil)
-(defun norcas()        (interactive) (nssh "azhukov@norcas.accessline.com")             (delete-other-windows))
-(defun compile7()      (interactive) (nssh "azhukov@compile7.accessline.com")           (delete-other-windows))
-(defun lab6()          (interactive) (nssh "azhukov@www2.lab6.accessline.com")          (delete-other-windows))
-(defun ithilien()      (interactive) (nssh "zuav@10.9.3.217")                           (delete-other-windows))
-(defun eriador()       (interactive) (nssh "zuav@10.0.2.102")                           (delete-other-windows))
-(defun hpbx-dev-box()  (interactive) (nssh "azhukov@devhpbx019-1.vx.devintermedia.net") (delete-other-windows))
-(defun hpbx-dev-logs() (interactive) (nssh "azhukov@172.16.41.56")                      (delete-other-windows))
+(defun norcas()        (interactive) (nssh "azhukov@norcas.accessline.com")                   (delete-other-windows))
+(defun compile7()      (interactive) (nssh "azhukov@compile7.accessline.com")                 (delete-other-windows))
+(defun compile8()      (interactive) (nssh "azhukov@compile8.accessline.com")                 (delete-other-windows))
+(defun lab6()          (interactive) (nssh "azhukov@www2.lab6.accessline.com")                (delete-other-windows))
+(defun ithilien()      (interactive) (nssh "zuav@10.9.3.217")                                 (delete-other-windows))
+(defun eriador()       (interactive) (nssh "zuav@10.0.2.102")                                 (delete-other-windows))
+(defun hpbx-dev-box()  (interactive) (nssh "azhukov@devhpbx019-1.vx.devintermedia.net")       (delete-other-windows))
+(defun hpbx-dev-logs() (interactive) (nssh "azhukov@172.16.41.56")                            (delete-other-windows))
 (defun jenkins()       (interactive) (nssh "azhukov@build-voip-scout-1.vx.devintermedia.net") (delete-other-windows))
+(defun devmss()        (interactive) (nssh "azhukov@devmss-1.vx.devintermedia.net")           (delete-other-windows))
 
 ;;;;
 ;;;; Save frequently visited files in registers or assign then to quick keys
@@ -488,17 +542,18 @@ If buffer with name NAME exists, then switch to it."
 (set-register ?h (cons 'file "~/"))
 (set-register ?n (cons 'file "~/lib/personal/notes"))
 (set-register ?t (cons 'file "~/tmp"))
+;;;;
 (global-set-key [?\A-1] (lambda () (interactive) (jump-to-register ?h)))
 (global-set-key [?\A-2] (lambda () (interactive) (ithilien)))
-;(global-set-key [?\A-3] (lambda () (interactive) (open-create-named-shell-buffer "VoiceCore.dev" "~/src/VoiceCore")))
+;(global-set-key [?\A-3] (lambda () (interactive) (norcas)))
 (global-set-key [?\A-4] (lambda () (interactive) (eriador)))
 (global-set-key [?\A-5] (lambda () (interactive) (hpbx-dev-box)))
-(global-set-key [?\A-6] (lambda () (interactive) (open-create-named-shell-buffer "VoiceCore"  "~/VoiceCore")))
-(global-set-key [?\A-7] (lambda () (interactive) (open-create-named-shell-buffer "ss1.dev"    "~/")))
+(global-set-key [?\A-6] (lambda () (interactive) (dired "/sshx:azhukov@172.16.41.56:/var/log/servers/")))
+;(global-set-key [?\A-7] (lambda () (interactive) (open-create-named-shell-buffer "ss1.dev"    "~/")))
 ;(global-set-key [?\s-6] (lambda () (interactive) (radon)))
 ;(global-set-key [?\s-7] (lambda () (interactive) (eriador)))
-;(global-set-key [?\s-8] (lambda () (interactive) (inf-ruby) (delete-other-windows)))
-;;(global-set-key [?\s-5] (lambda () (interactive) (open-create-named-shell-buffer "crew" "~/src/ndk/platform/ndk/crew")))
+(global-set-key [?\A-8] (lambda () (interactive) (norcas)))
+(global-set-key [?\A-9] (lambda () (interactive) (compile7)))
 ;;(global-unset-key [?\s-7])
 ;;> 
 ;;> (set-register ?a (cons 'file "/sudo::/etc/apt/sources.list"))
@@ -550,7 +605,22 @@ If buffer with name NAME exists, then switch to it."
 ;;;;
 (add-hook 'find-file-hooks  'auto-insert)
 (add-hook 'before-save-hook 'copyright-update)
-;(remove-hook 'before-save-hook 'copyright-update)
+;;(remove-hook 'before-save-hook 'copyright-update)
+
+;;;;
+;;;; Kamailio mode
+;;;;
+(defconst kamailio-mode-syntax-table
+  (let ((table (make-syntax-table)))
+    (modify-syntax-entry ?\" "\""     table) ; "  is a string delimiter
+    (modify-syntax-entry ?#  "<"      table) ; #  is a comment starter
+    (modify-syntax-entry ?\n ">"      table) ; \n is a comment ender
+    table))
+
+(define-derived-mode kamailio-mode prog-mode "Kamailio Configuration File Mode"
+  :syntax-table kamailio-mode-syntax-table
+  (font-lock-fontify-buffer))
+
 
 ;;;;
 ;;;; Function from gnu.emacs.sources
@@ -670,12 +740,13 @@ maybe accessed via the corresponding tramp method."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Buffer-menu-name-width 28)
  '(ansi-color-names-vector
    ["#272822" "#F92672" "#A6E22E" "#E6DB74" "#66D9EF" "#FD5FF0" "#A1EFE4" "#F8F8F2"])
  '(compilation-message-face (quote default))
  '(custom-safe-themes
    (quote
-    ("f3ab34b145c3b2a0f3a570ddff8fabb92dafc7679ac19444c31058ac305275e1" default)))
+    ("8b58ef2d23b6d164988a607ee153fd2fa35ee33efc394281b1028c2797ddeebb" "f3ab34b145c3b2a0f3a570ddff8fabb92dafc7679ac19444c31058ac305275e1" default)))
  '(fci-rule-color "#3C3D37")
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
@@ -692,9 +763,10 @@ maybe accessed via the corresponding tramp method."
  '(nxml-child-indent 4)
  '(package-selected-packages
    (quote
-    (rfc-mode protobuf-mode bar-cursor bm magit monokai-theme nssh)))
+    (markdown-mode rfc-mode protobuf-mode bar-cursor bm magit monokai-theme nssh)))
  '(pos-tip-background-color "#FFFACE")
  '(pos-tip-foreground-color "#272822")
+ '(rfc-mode-directory "/home/azhukov/Documents/rfc/")
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -719,7 +791,23 @@ maybe accessed via the corresponding tramp method."
  '(vc-annotate-very-old-color nil)
  '(weechat-color-list
    (quote
-    (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0"))))
+    (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
+ '(woman-manpath
+   (quote
+    ("/usr/man" "/usr/share/man" "/usr/local/share/man" "/opt/erlang/23.1.4/lib/erlang/man"
+     ("/bin" . "/usr/share/man")
+     ("/usr/bin" . "/usr/share/man")
+     ("/sbin" . "/usr/share/man")
+     ("/usr/sbin" . "/usr/share/man")
+     ("/usr/local/bin" . "/usr/local/man")
+     ("/usr/local/bin" . "/usr/local/share/man")
+     ("/usr/local/sbin" . "/usr/local/man")
+     ("/usr/local/sbin" . "/usr/local/share/man")
+     ("/usr/X11R6/bin" . "/usr/X11R6/man")
+     ("/usr/bin/X11" . "/usr/X11R6/man")
+     ("/usr/games" . "/usr/share/man")
+     ("/opt/bin" . "/opt/man")
+     ("/opt/sbin" . "/opt/man")))))
 
 ;; (setq org-tags-column 115)
 ;; (setq org-tags-column 140)
@@ -733,11 +821,10 @@ maybe accessed via the corresponding tramp method."
 ;-;  '(eruby-standard-face ((t (:background "gray25"))))
 ;-;  '(markdown-code-face ((t (:inherit fixed-pitch :background "gray30")))))
 ;-; 
-(savehist-load)
 
 (server-start)
 ;(semantic-mode 1)
-;(load-theme 'monokai t)
+(load-theme 'monokai t)
 ;;;; .emacs ends 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
