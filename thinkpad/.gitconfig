@@ -12,3 +12,5 @@
         renamelimit = 2200
 [fetch]
 	recursesubmodules = true
+[pull]
+	rebase = false
